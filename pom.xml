@@ -11,7 +11,7 @@
     <description>
         The bigraph model provider is a library that provides common interfaces for data source/data sink
         infrastructures for native bigraphical applications.
-        It can supply and store bigraphical models.
+        It provides facilities to supply and store bigraphical models.
         It defines a generic and flexible class hierarchy to integrate a wide range of data sources.
     </description>
 
@@ -21,14 +21,15 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
-<!--        <bigraph.version>1.1.0</bigraph.version>-->
         <bigraph.version>2.0.0-SNAPSHOT</bigraph.version>
 <!--        <spring.data.cdo.version>0.6.0-SNAPSHOT</spring.data.cdo.version>-->
         <guava.version>33.0.0-jre</guava.version>
         <jgrapht.version>1.5.2</jgrapht.version>
         <graphstream.version>2.0</graphstream.version>
         <lombok.version>1.18.26</lombok.version>
-        <jts.version>1.16.1</jts.version>
+        <junit.version>5.10.3</junit.version>
+        <jackson.version>2.17.1</jackson.version>
+        <eclipse.core.runtime>3.31.0</eclipse.core.runtime>
     </properties>
 
     <repositories>
@@ -75,19 +76,8 @@
         <dependency>
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.core.runtime</artifactId>
-            <version>3.31.0</version>
+            <version>${eclipse.core.runtime}</version>
         </dependency>
-        <!-- -->
-<!--        <dependency>-->
-<!--            <groupId>org.danilopianini</groupId>-->
-<!--            <artifactId>java-quadtree</artifactId>-->
-<!--            <version>0.2.1</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.locationtech.jts</groupId>-->
-<!--            <artifactId>jts-core</artifactId>-->
-<!--            <version>${jts.version}</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -111,7 +101,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.17.1</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -135,7 +125,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.10.3</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

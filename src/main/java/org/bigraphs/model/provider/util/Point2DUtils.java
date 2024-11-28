@@ -6,11 +6,11 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
- * A utility class for working with quadtrees.
+ * A utility class for working with points in location models.
  *
  * @author Dominik Grzelak
  */
-public class QuadTreeUtils {
+public class Point2DUtils {
 
     private static final Random random = new Random();
 

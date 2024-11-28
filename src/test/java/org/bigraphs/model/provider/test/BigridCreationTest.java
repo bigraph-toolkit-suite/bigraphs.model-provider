@@ -1,6 +1,8 @@
 package org.bigraphs.model.provider.test;
 
 import org.bigraphs.framework.core.BigraphFileModelManagement;
+import org.bigraphs.framework.core.analysis.PureLinkGraphConnectedComponents;
+import org.bigraphs.framework.core.impl.BigraphEntity;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.visualization.SwingGraphStreamer;
 import org.bigraphs.model.provider.base.BLocationModelData;
@@ -9,6 +11,10 @@ import org.bigraphs.model.provider.spatial.bigrid.BiGridProvider;
 import org.graphstream.ui.view.Viewer;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class BigridCreationTest implements BigraphUnitTestSupport {
     static final String DUMP_PATH = "src/test/resources/dump/bigrid/";
@@ -29,13 +35,29 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
         // Create bigraph grid
         BiGridProvider provider = new BiGridProvider(lmpd)
-                .setRouteDirection(BiGridProvider.RouteDirection.UNIDIRECTIONAL_FORWARD);
+                .setRouteDirection(BiGridProvider.RouteDirection.BIDIRECTIONAL);
         PureBigraph bigrid = provider.getBigraph();
         eb(bigrid, String.format("bigrid-%dx%d", m, n), DUMP_PATH);
         print(bigrid);
         printMetaModel(bigrid);
         BigraphFileModelManagement.Store.exportAsInstanceModel(bigrid.getSignature(), System.out);
         BigraphFileModelManagement.Store.exportAsMetaModel(bigrid.getSignature(), System.out);
+
+
+//        PureLinkGraphConnectedComponents cc = new PureLinkGraphConnectedComponents();
+//        cc.decompose(bigrid);
+//        List<PureBigraph> connectedComponents = cc.getConnectedComponents();
+//        PureLinkGraphConnectedComponents.UnionFind uf = cc.getUnionFindDataStructure();
+//        System.out.println("Connected Components: " + uf.getCount());
+//        System.out.println("Connected Components: " + connectedComponents.size());
+//        System.out.println("# of Partition Roots: " + uf.countRoots(uf.getChildParentMap()));
+//        Set<Integer> rootsOfPartitions = uf.getRootsOfPartitions(uf.getChildParentMap());
+//        System.out.println("rootsOfPartitions: " + rootsOfPartitions);
+////        System.out.println(uf.getRank());
+//        Map<Integer, List<BigraphEntity<?>>> partitions = cc.getPartitions();
+//        System.out.println("partitions: " + partitions);
+
+
         SwingGraphStreamer graphStreamer = new SwingGraphStreamer(bigrid)
                 .renderSites(false)
                 .renderRoots(false);

@@ -2,6 +2,9 @@ package org.bigraphs.model.provider;
 
 import java.util.function.Supplier;
 
+/**
+ * @author Dominik Grzelak
+ */
 public interface BModelProviderSupport {
     default Supplier<String> createNameSupplier(final String prefix) {
         return new Supplier<>() {

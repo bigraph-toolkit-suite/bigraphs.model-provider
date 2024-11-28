@@ -3,14 +3,12 @@ package org.bigraphs.model.provider;
 import org.bigraphs.framework.core.HasSignature;
 import org.bigraphs.framework.core.Signature;
 import org.bigraphs.framework.core.datatypes.EMetaModelData;
-import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
 
-import static org.bigraphs.framework.core.factory.BigraphFactory.pureBuilder;
 import static org.bigraphs.framework.core.factory.BigraphFactory.pureSignatureBuilder;
 
 /**
- * The most general interface of any signature provider (file-based, database-driven, dynamically, ...).
+ * The most general interface of any signature provider (file-based, database-driven, dynamic, ...).
  *
  * @param <S> type of the signature used by the bigraph
  * @author Dominik Grzelak

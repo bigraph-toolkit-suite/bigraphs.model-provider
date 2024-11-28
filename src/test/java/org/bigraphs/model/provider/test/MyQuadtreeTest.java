@@ -3,7 +3,7 @@ package org.bigraphs.model.provider.test;
 import org.bigraphs.model.provider.spatial.quadtree.impl.MaxDepthReachedException;
 import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeImpl;
 import org.bigraphs.model.provider.spatial.quadtree.JQuadtreeVisualizer;
-import org.bigraphs.model.provider.util.QuadTreeUtils;
+import org.bigraphs.model.provider.util.Point2DUtils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testng.annotations.BeforeMethod;
@@ -79,7 +79,7 @@ public class MyQuadtreeTest implements BigraphUnitTestSupport {
         for (int i = 0; i < jitterCycles; i++) {
             List<Point2D> pointsQueried = new LinkedList<>(quadtree.queryRange(boundary));
 //            System.out.println(Arrays.toString(pointsQueried.toArray()));
-            List<Point2D> pointsJittered = QuadTreeUtils.jitterPoints(pointsQueried, jitterAmount);
+            List<Point2D> pointsJittered = Point2DUtils.jitterPoints(pointsQueried, jitterAmount);
             for (int j = 0; j < pointsQueried.size(); j++) {
                 try {
                     quadtree.delete(pointsQueried.get(j));

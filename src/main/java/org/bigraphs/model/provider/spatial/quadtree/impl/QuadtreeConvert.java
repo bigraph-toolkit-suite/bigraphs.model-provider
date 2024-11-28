@@ -6,9 +6,19 @@ import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.function.Supplier;
 
+/**
+ * This converter class helps to create a bigrid-style quadtree.
+ * It creates the intermediate representation {@link BLocationModelData} that a {@link org.bigraphs.model.provider.spatial.bigrid.BiGridProvider}
+ * takes as input.
+ *
+ * @author Dominik Grzelak
+ */
 public class QuadtreeConvert {
 
     Supplier<String> suppLocalLbls = QuadtreeConvert.createNameSupplier("v");
+
+    public QuadtreeConvert() {
+    }
 
     public BLocationModelData createBLocationModelDataFromQuadtree(QuadtreeImpl quadtree) {
         BLocationModelData locationData = new BLocationModelData();
@@ -66,11 +76,9 @@ public class QuadtreeConvert {
 
     // Helper method to sort leaf nodes by position (top-left origin)
     private void sortLeafNodesByPosition(List<QuadtreeImpl> leafNodes) {
-//        Collections.sort(leafNodes, Comparator.comparing((Quadtree leaf) -> calculateCenter(leaf.getBoundary()).y)
-//                .thenComparing(leaf -> calculateCenter(leaf.getBoundary()).x));
 //        // Another variant
-////        leafNodes.sort(Comparator.comparingDouble((Quadtree node) -> calculateCenter(node.getBoundary()).getY())
-////                .thenComparingDouble(node -> calculateCenter(node.getBoundary()).getX()));
+//        leafNodes.sort(Comparator.comparingDouble((Quadtree node) -> calculateCenter(node.getBoundary()).getY())
+//                .thenComparingDouble(node -> calculateCenter(node.getBoundary()).getX()));
         leafNodes.sort((node1, node2) -> {
             float x1 = (float) node1.getBoundary().getX();
             float y1 = (float) node1.getBoundary().getY();
@@ -85,7 +93,6 @@ public class QuadtreeConvert {
 
     // Generate a unique name for each locale based on quadtree node properties
     private String generateLocaleName(QuadtreeImpl node) {
-//        return "locale_" + node.hashCode();
         return suppLocalLbls.get();
     }
 

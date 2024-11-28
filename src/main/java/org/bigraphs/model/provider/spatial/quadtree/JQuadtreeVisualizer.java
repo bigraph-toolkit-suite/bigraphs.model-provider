@@ -10,6 +10,11 @@ import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
+/**
+ * Visualize a quadtree in a GUI for debugging purposes.
+ *
+ * @author Dominik Grzelak
+ */
 public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, KeyListener {
     private final QuadtreeImpl quadtree;
     private boolean applyTransformations = false;
@@ -36,8 +41,8 @@ public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, Key
 
         // Apply transformations if the flag is true
         if (applyTransformations) {
+            // Mirror vertically (flip horizontally)
             System.out.println("applyTransformations = " + applyTransformations);
-            // Step 1: Mirror vertically (flip horizontally)
             int width = getWidth();
             int height = getHeight();
 
@@ -94,25 +99,14 @@ public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, Key
         }
     }
 
-    // Main method to initialize and display the visualization
-    public static void main(String[] args) throws InterruptedException {
-
-    }
-
     @Override
     public void onPointInserted(Point2D point) {
-        // Repaint the panel whenever a point is inserted
-        repaint();
+        repaint(); // Repaint the panel whenever a point is inserted
     }
 
     @Override
     public void onPointDeleted(Point2D point) {
         repaint();
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
@@ -122,14 +116,19 @@ public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, Key
         if (keyCode == KeyEvent.VK_PLUS || keyCode == KeyEvent.VK_EQUALS) { // Zoom in with + or =
             scale += 0.1;
             repaint();
-        } else if (keyCode == KeyEvent.VK_MINUS) { // Zoom out with -
+        } else if (keyCode == KeyEvent.VK_MINUS) { // Zoom out with "-"
             scale = Math.max(0.1, scale - 0.1); // Prevent scale from going below 0.1
             repaint();
-        } else if (keyCode == KeyEvent.VK_T) { // Toggle transformations with T key
+        } else if (keyCode == KeyEvent.VK_T) { // Toggle transformations with "T" key
             System.out.println("Toggle: Mirror horizontally and then rotate 90° left (" + applyTransformations + ")");
             applyTransformations = !applyTransformations;
             repaint();
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
     }
 
     @Override

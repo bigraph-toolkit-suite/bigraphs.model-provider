@@ -2,6 +2,7 @@ package org.bigraphs.model.provider.spatial.quadtree.impl;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bigraphs.model.provider.spatial.quadtree.Quadtree;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
  *
  * @author Dominik Grzelak
  */
-public class QuadtreeImpl {
+public class QuadtreeImpl implements Quadtree {
     private final List<QuadtreeListener> listeners = new ArrayList<>();
 
     // Define a proximity threshold (e.g., 1.0 units)
@@ -326,7 +327,7 @@ public class QuadtreeImpl {
         List<Point2D> found = new ArrayList<>();
 
         if (!boundary.intersects(range)) {
-            return found; // Return empty list if range doesn't intersect boundary
+            return found; // Return an empty list if range doesn't intersect boundary
         }
 
         for (Point2D point : points) {
@@ -345,11 +346,17 @@ public class QuadtreeImpl {
         return found;
     }
 
-    // Rectangle class representing a boundary for a quadtree node
+    /**
+     * Rectangle class representing a boundary for a quadtree node
+     */
+    @Setter
+    @Getter
     public static class Boundary {
-        @Getter
-        @Setter
         public double x, y, width, height;
+
+        public Boundary() {
+            x = y = width = height = 0;
+        }
 
         public Boundary(double x, double y, double width, double height) {
             this.x = x;
