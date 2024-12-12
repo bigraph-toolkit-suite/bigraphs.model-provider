@@ -59,7 +59,7 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
 
         SwingGraphStreamer graphStreamer = new SwingGraphStreamer(bigrid)
-                .renderSites(false)
+                .renderSites(true)
                 .renderRoots(false);
         graphStreamer.prepareSystemEnvironment();
         Viewer graphViewer = graphStreamer.getGraphViewer();

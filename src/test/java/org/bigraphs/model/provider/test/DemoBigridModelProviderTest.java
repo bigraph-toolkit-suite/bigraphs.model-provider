@@ -188,7 +188,7 @@ public class DemoBigridModelProviderTest implements BigraphUnitTestSupport {
         eb(bigrid, "bigrid-3x3", DUMP_PATH + "decomp/");
 
 
-        PureBigraphDecomposerImpl decomposer = BigraphDecomposer.create(BigraphDecomposer.DEFAULT_DECOMPOSITION_STRATEGY, PureBigraphDecomposerImpl.class);
+        PureBigraphDecomposerImpl decomposer = BigraphDecomposer.create(BigraphDecomposer.DEFAULT_DECOMPOSITION_STRATEGY);
         decomposer.decompose(bigrid);
         System.out.println("Count: " + decomposer.getUnionFindDataStructure().getCount());
         System.out.println("Partitions: " + decomposer.getPartitions());
