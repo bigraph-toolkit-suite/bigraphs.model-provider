@@ -60,7 +60,7 @@ public class BiGridElementFactory {
     public PureBigraph localeSingleRouteNorth(int x, int y) throws InvalidConnectionException {
         PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
-        Point2D.Float north = new Point2D.Float(x - 1, y); //TODO DONE
+        Point2D.Float north = new Point2D.Float(x - 1, y);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameNorth = BiGridSupport.formatParamControl(north);
         PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
@@ -73,7 +73,7 @@ public class BiGridElementFactory {
     public PureBigraph localeSingleRouteEast(int x, int y) throws InvalidConnectionException {
         PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
-        Point2D.Float east = new Point2D.Float(x, y + 1); //TODO DONE
+        Point2D.Float east = new Point2D.Float(x, y + 1);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameEast = BiGridSupport.formatParamControl(east);
         PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
@@ -86,7 +86,7 @@ public class BiGridElementFactory {
     public PureBigraph localeSingleRouteSouth(int x, int y) throws InvalidConnectionException {
         PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
-        Point2D.Float south = new Point2D.Float(x + 1, y); //TODO DONE
+        Point2D.Float south = new Point2D.Float(x + 1, y);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameSouth = BiGridSupport.formatParamControl(south);
         PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
@@ -99,7 +99,7 @@ public class BiGridElementFactory {
     public PureBigraph localeSingleRouteWest(int x, int y) throws InvalidConnectionException {
         PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
-        Point2D.Float west = new Point2D.Float(x, y - 1); //TODO DONE
+        Point2D.Float west = new Point2D.Float(x, y - 1);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameWest = BiGridSupport.formatParamControl(west);
         PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
