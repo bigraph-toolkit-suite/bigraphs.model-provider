@@ -29,7 +29,108 @@ public class MyQuadtreeTest implements BigraphUnitTestSupport {
     }
 
     @Test
-    void gui_jitter_simulation() throws InterruptedException {
+    void gui_circle_jitter() throws InterruptedException {
+        double areaSizeW = 400;
+        double areaSizeH = 400;
+        double marginAgent = 5;
+        int td0 = (int) (Math.ceil(Math.log(areaSizeW / marginAgent) / Math.log(2d))) + 1;
+        int td1 = (int) (Math.ceil(Math.log(areaSizeH / marginAgent) / Math.log(2d))) + 1;
+        int td = Math.min(td0, td1);
+        System.out.println("Max Tree Depth = " + td);
+        int numAgentsPerRow = (int) Math.floor(areaSizeW / marginAgent);
+        int numAgentsPerCol = (int) Math.floor(areaSizeH / marginAgent);
+        System.out.println("NumAgentsPerRow = " + numAgentsPerRow);
+        System.out.println("NumAgentsPerRow = " + numAgentsPerCol);
+        // Define boundary for quadtree
+        QuadtreeImpl.Boundary boundary = new QuadtreeImpl.Boundary(0, 0, areaSizeW, areaSizeH);
+        int maxPointsPerLeaf = 1;  // Configurable max points
+        int maxTreeDepth = td;      // Configurable max depth
+
+        QuadtreeImpl quadtree = new QuadtreeImpl(boundary, maxPointsPerLeaf, maxTreeDepth);
+
+        // Create the visualization window
+        JFrame frame = new JFrame("Agent Position with Jitter (Simulation)");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new JQuadtreeVisualizer(quadtree));
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        System.out.println("Creating now points");
+        List<Point2D> pointsOnCircleBase = Point2DUtils.pointCircle(new Point2D.Double(200, 200), 50, 10);
+        pointsOnCircleBase.forEach(p -> {
+            try {
+                quadtree.insert(p);
+                Thread.sleep(50);
+            } catch (MaxDepthReachedException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        List<Point2D> pointsOnCircleGripper = Point2DUtils.pointCircle(new Point2D.Double(200, 80), 10, 5);
+        pointsOnCircleGripper.forEach(p -> {
+            try {
+                quadtree.insert(p);
+                Thread.sleep(50);
+            } catch (MaxDepthReachedException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        int jitterCycles = 10000;
+        double jitterAmount = 0.1;
+        int timeSleepBetweenCycles = 30;
+
+        for (int i = 0; i < jitterCycles; i++) {
+            List<Point2D> pointsQueried = new LinkedList<>(quadtree.queryRange(boundary));
+//            System.out.println(Arrays.toString(pointsQueried.toArray()));
+            List<Point2D> pointsJittered = Point2DUtils.jitterPoints(pointsQueried, jitterAmount);
+            for (int j = 0; j < pointsQueried.size(); j++) {
+                try {
+                    quadtree.delete(pointsQueried.get(j));
+                    quadtree.insert(pointsJittered.get(j));
+                } catch (MaxDepthReachedException e) {
+                    e.printStackTrace();
+                    try {
+                        quadtree.insert(pointsQueried.get(j));
+                    } catch (MaxDepthReachedException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+//                Thread.sleep(80);
+            }
+            Thread.sleep(timeSleepBetweenCycles);
+            quadtree.cleanup();
+        }
+
+        while (true) {
+            Thread.sleep(1000);
+        }
+
+//        System.out.println("Deleting now points");
+//        Thread.sleep(1000);
+//        pointsQueried = quadtree.queryRange(boundary);
+//        System.out.println(pointsQueried.size());
+//        System.out.println(Arrays.toString(pointsQueried.toArray()));
+
+//        List<SomeObjectWithArea> objects = new ArrayList<>();
+//        for (int i = 0; i < 150; i++) {
+//            SomeObjectWithArea obj = new SomeObjectWithArea(
+//                    new Point2D.Double(Math.random() * areaSizeW, Math.random() * areaSizeH), // random position
+//                    new Point2D.Double(Math.random() * 2 - 1, Math.random() * 2 - 1),       // random velocity
+//                    new Point2D.Double(5.0, 5.0),                                           // fixed size
+//                    new Color((float) Math.random(), (float) Math.random(), (float) Math.random()) // random color
+//            );
+//            objects.add(obj);
+//        }
+
+    }
+
+    @Test
+    void gui_jitter() throws InterruptedException {
         double areaSizeW = 400;
         double areaSizeH = 400;
         double marginAgent = 20;
@@ -71,9 +172,8 @@ public class MyQuadtreeTest implements BigraphUnitTestSupport {
         }
 
 
-
         int jitterCycles = 10000;
-        int jitterAmount = 8;
+        double jitterAmount = 0.1;
         int timeSleepBetweenCycles = 30;
 
         for (int i = 0; i < jitterCycles; i++) {

@@ -1,6 +1,7 @@
 package org.bigraphs.model.provider.util;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -15,10 +16,21 @@ public class Point2DUtils {
     private static final Random random = new Random();
 
     // Jitter amount controls the maximum displacement for the points
-    private static final double JITTER_AMOUNT = 1;
+    private static final double JITTER_AMOUNT_DEFAULT = 1;
+
+    public static List<Point2D> pointCircle(Point2D center, double radius, double pointCount) {
+        ArrayList<Point2D> points = new ArrayList<>();
+        for (int i = 0; i < pointCount; i++) {
+            double angle = 2 * Math.PI * i / pointCount;
+            double x = center.getX() + radius * Math.cos(angle);
+            double y = center.getY() + radius * Math.sin(angle);
+            points.add(new Point2D.Double(x, y));
+        }
+        return points;
+    }
 
     public static List<Point2D> jitterPoints(List<Point2D> points) {
-        return jitterPoints(points, JITTER_AMOUNT);
+        return jitterPoints(points, JITTER_AMOUNT_DEFAULT);
     }
 
     public static List<Point2D> jitterPoints(List<Point2D> points, double jitterAmount) {

@@ -9,8 +9,7 @@ import org.bigraphs.framework.core.exceptions.builder.TypeNotExistsException;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
 import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
-import org.bigraphs.model.provider.demo.mapf.v1.CFMAPF_WorldModelProvider;
-import org.bigraphs.model.provider.demo.mapf.v1.sig.CFMAPF_LocationSignatureProvider;
+import org.bigraphs.model.provider.spatial.signature.BigridSignatureProvider;
 import org.bigraphs.model.provider.util.MPMathUtils;
 
 import java.awt.geom.Point2D;
@@ -23,8 +22,6 @@ import static org.bigraphs.framework.core.factory.BigraphFactory.pureBuilder;
 /**
  * This is a concrete bigraph model (agent model) provider.
  * It provides a bigrid - bigraphical 2D grid.
- * <p>
- * The refinement {@link CFMAPF_WorldModelProvider} creates a bigrid within Cartesian space and coordinates.
  *
  * @author Dominik Grzelak
  */
@@ -43,7 +40,7 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
     protected BiMap<String, Integer> mLocale2Index = HashBiMap.create();
 
     public BiGridProvider(BLocationModelData lmpd) {
-        super(CFMAPF_LocationSignatureProvider.getInstance());
+        super(BigridSignatureProvider.getInstance());
         this.lmpd = lmpd;
     }
 

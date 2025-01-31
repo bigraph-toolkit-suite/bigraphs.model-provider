@@ -27,9 +27,9 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
     @Test
     void create_bigrid_nxm() throws Exception {
-        int m = 3;
-        int n = 3;
-        BLocationModelData lmpd = BLocationModelDataFactory.createGrid(m,n, 0,0, 1, 1f);
+        int m = 4;
+        int n = 4;
+        BLocationModelData lmpd = BLocationModelDataFactory.createGrid(m, n, 0, 0, 1, 1f);
         String json = BLocationModelDataFactory.toJson(lmpd);
         writeToFile(json, DUMP_PATH + String.format("bigrid-%dx%d.json", m, n));
 
@@ -59,7 +59,7 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
 
         SwingGraphStreamer graphStreamer = new SwingGraphStreamer(bigrid)
-                .renderSites(true)
+                .renderSites(false)
                 .renderRoots(false);
         graphStreamer.prepareSystemEnvironment();
         Viewer graphViewer = graphStreamer.getGraphViewer();

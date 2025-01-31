@@ -36,14 +36,14 @@ public class BLocationModelData {
     int numOfNavModelSites = 0;
     int numOfLocModelSites = 0;
 
-    //TODO: THIS IS OUTPUT STUFF: make monad, add a clone method
+    //TODO: THIS IS OUTPUT: make monad, add a clone method
     Map<String, List<Point2D.Float>> localeNameToCoordinates = new HashMap<>();
     Map<String, String> bNodeIdToExternalLocaleName = new HashMap<>();
     BiMap<String, Integer> localeNameToRootOrSiteIndex = HashBiMap.create();
     // F, F', F'' ... sets of coordinates
     // map: nodeID -> external locale label
     // external local name <-> site/root index original
-    //TODO: THIS IS OUTPUT STUFF
+    //TODO: THIS IS OUTPUT
 
     public Locale getLocaleByName(String name) {
         if (name == null) return null;

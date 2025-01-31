@@ -1,4 +1,4 @@
-package org.bigraphs.model.provider.demo.mapf.v1.sig;
+package org.bigraphs.model.provider.spatial.signature;
 
 import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
 import org.bigraphs.framework.core.impl.signature.DynamicSignatureBuilder;
@@ -7,24 +7,24 @@ import org.bigraphs.model.provider.base.BAbstractSignatureProvider;
 import static org.bigraphs.framework.core.factory.BigraphFactory.pureSignatureBuilder;
 
 /**
- * The signature for the CF-MAPF Use Case.
- * This represents the navigation syntax.
+ * The default signature for the CF-MAPF Use Case.
+ * This represents the location syntax.
  *
  * @author Dominik Grzelak
  */
-public class CFMAPF_NavigationSignatureProvider extends BAbstractSignatureProvider<DefaultDynamicSignature> {
+public class BigridSignatureProvider extends BAbstractSignatureProvider<DefaultDynamicSignature> {
 
-    private static CFMAPF_NavigationSignatureProvider instance;
+    private static BigridSignatureProvider instance;
     private static final Object lock = new Object();
 
-    private CFMAPF_NavigationSignatureProvider() {
+    private BigridSignatureProvider() {
     }
 
-    public static CFMAPF_NavigationSignatureProvider getInstance() {
+    public static BigridSignatureProvider getInstance() {
         if (instance == null) {
             synchronized (lock) {
                 if (instance == null) {
-                    instance = new CFMAPF_NavigationSignatureProvider();
+                    instance = new BigridSignatureProvider();
                 }
             }
         }
@@ -33,13 +33,14 @@ public class CFMAPF_NavigationSignatureProvider extends BAbstractSignatureProvid
 
     @Override
     public DefaultDynamicSignature getSignature() {
-        //TODO call createOrGetSignature and init with EMetaData?
         DynamicSignatureBuilder defaultBuilder = pureSignatureBuilder();
         defaultBuilder
-                .addControl("Ensemble", 0)
-                .addControl("CO", 1)
-                .addControl("NE", 1)
-                .addControl("tgt", 2)
+                .addControl("VarSpace", 0)
+                .addControl("True", 0)
+                .addControl("False", 0)
+                .addControl("Error", 0)
+                .addControl("Locale", 1)
+                .addControl("Route", 1)
         ;
         return defaultBuilder.create();
     }
