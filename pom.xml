@@ -7,7 +7,7 @@
     <groupId>org.bigraphs.model.provider</groupId>
     <artifactId>model-provider-core</artifactId>
     <version>1.0.0</version>
-
+    <name>Bigraph Model Provider (Core)</name>
     <description>
         The bigraph model provider is a library that provides common interfaces for data source/data sink
         infrastructures for native bigraphical applications.
@@ -305,12 +305,6 @@
     <profiles>
         <profile>
             <id>release</id>
-            <!--            <activation>-->
-            <!--                <property>-->
-            <!--                    <name>performRelease</name>-->
-            <!--                    <value>true</value>-->
-            <!--                </property>-->
-            <!--            </activation>-->
             <build>
                 <plugins>
                     <plugin>
