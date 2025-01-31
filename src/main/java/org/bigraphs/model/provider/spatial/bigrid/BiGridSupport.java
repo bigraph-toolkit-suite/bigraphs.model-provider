@@ -2,16 +2,19 @@ package org.bigraphs.model.provider.spatial.bigrid;
 
 import com.google.common.graph.Traverser;
 import org.bigraphs.framework.core.BigraphEntityType;
+import org.bigraphs.framework.core.exceptions.InvalidConnectionException;
+import org.bigraphs.framework.core.exceptions.builder.TypeNotExistsException;
 import org.bigraphs.framework.core.impl.BigraphEntity;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
+import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
 import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
 import org.bigraphs.model.provider.base.BLocationModelData;
+import org.bigraphs.model.provider.spatial.signature.BigridSignatureProvider;
 import org.bigraphs.model.provider.util.MPMathUtils;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Computes graph properties of a bigrid, a bigraphical grid.
@@ -77,27 +80,57 @@ public class BiGridSupport {
         }
     }
 
+    public static PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy connectToOuterName(String localeName,
+                                                                                           Map<String, PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy> localeMap,
+                                                                                           String outerName,
+                                                                                           Map<String, String> localeOuterNameMap)
+            throws InvalidConnectionException, TypeNotExistsException {
+        if (!localeOuterNameMap.containsKey(localeName)) {
+            localeOuterNameMap.putIfAbsent(localeName, outerName);
+            return localeMap.get(localeName).top().linkToOuter(outerName);
+        }
+        return localeMap.get(localeName);
+    }
+
+    /**
+     * A point of a route cannot overlap multiple locales (its spatial dimensions) but there can be many routes starting/ending from the same locale.
+     * Locales have the property that they have distinct, non-overlapping realms.
+     * So this method only retrieves a unique locale for a route position if there is any.
+     *
+     * @param roadPosition a starting or ending position of a route element
+     * @param locales      a list of locales to observe
+     * @return a unique local element, where the starting or ending point of a route is within the locale's spatial dimension
+     */
+    public static BLocationModelData.Locale getConnectedLocale(Point2D.Float roadPosition, List<BLocationModelData.Locale> locales) {
+        for (BLocationModelData.Locale each : locales) {
+            if (MPMathUtils.coordinatesAreClose(roadPosition, each.getCenter(), 0)) {
+                return each;
+            }
+        }
+        return null;
+    }
+
     public static class Assertations {
-        //TODO asssertIsBiGrid()
+        public static void assertIsBiGrid(PureBigraph bigraph) {
+            Set<String> sourceTypeLabels = bigraph.getSignature().getControls().stream().map(c -> c.getNamedType().stringValue()).collect(Collectors.toSet());
+            DefaultDynamicSignature signature = BigridSignatureProvider.getInstance().getSignature();
+            signature.getControls().stream().map(c -> c.getNamedType().stringValue()).forEach(controllbl -> {
+                if (!sourceTypeLabels.contains(controllbl)) {
+                    throw new RuntimeException("Assertion failed (assertIsBigrid): Control label " + controllbl + " not in the given a bigrid-style bigraph.");
+                }
+            });
+        }
     }
 
     public static class Search {
 
-        // By the internal node name (the name id attribute of the bigraph node) of a locale
-        @Deprecated
-        public static int findLocaleSiteIndexByLocaleID(String localeNodeID, PureBigraph bigrid) {
-            //TODO asssertIsBiGrid()
-            return -1;
-        }
-
         /**
-         *
          * @param coordControlLbl
          * @param bigrid
          * @return -1 if index could not be determined.
          */
         public static int findLocaleSiteIndexByCoordinate(String coordControlLbl, PureBigraph bigrid) {
-            //TODO asssertIsBiGrid()
+            Assertations.assertIsBiGrid(bigrid);
             Traverser<BigraphEntity> traverser = Traverser.forTree(bigrid::getChildrenOf);
             Iterable<BigraphEntity> bigraphEntities = traverser.breadthFirst(bigrid.getRoots());
             for (BigraphEntity<?> x : bigraphEntities) {
@@ -113,11 +146,11 @@ public class BiGridSupport {
                                     .getIndex();
                         }
                     } catch (IllegalArgumentException e) { // from parseParamControl
-    //                    e.printStackTrace();
-    //                    System.out.println("No coordinate control: " + x.getControl());
+                        //                    e.printStackTrace();
+                        //                    System.out.println("No coordinate control: " + x.getControl());
                     } catch (NoSuchElementException e) { // from orElseThrow
-    //                    e.printStackTrace();
-    //                    System.out.println("Contains no site: " + x.getControl());
+                        //                    e.printStackTrace();
+                        //                    System.out.println("Contains no site: " + x.getControl());
                     }
                 }
             }

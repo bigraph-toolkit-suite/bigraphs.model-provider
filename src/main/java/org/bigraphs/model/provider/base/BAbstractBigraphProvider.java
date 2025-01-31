@@ -18,9 +18,8 @@ public abstract class BAbstractBigraphProvider<S extends Signature<?>, B extends
 
     protected BSignatureProvider<S> signatureProvider;
 
-
-    //TODO notnull
     public BAbstractBigraphProvider(BSignatureProvider<S> signatureProvider) {
+        assert signatureProvider != null;
         this.signatureProvider = signatureProvider;
     }
 

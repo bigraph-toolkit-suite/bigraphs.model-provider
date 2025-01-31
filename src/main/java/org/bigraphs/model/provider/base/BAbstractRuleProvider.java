@@ -23,8 +23,8 @@ public abstract class BAbstractRuleProvider<S extends Signature<?>, B extends Bi
 
     protected BSignatureProvider<S> signatureProvider;
 
-    //TODO notnull
     public BAbstractRuleProvider(BSignatureProvider<S> signatureProvider) {
+        assert signatureProvider != null;
         this.signatureProvider = signatureProvider;
     }
 

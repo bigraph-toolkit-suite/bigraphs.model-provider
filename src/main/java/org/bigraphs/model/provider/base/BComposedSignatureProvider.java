@@ -35,8 +35,6 @@ public class BComposedSignatureProvider<S extends Signature<?>, R, C extends BSi
         super(bSignatureProviders.stream().map(x -> (BAbstractProvider<S>) x).toList());
     }
 
-
-    //TODO assertSigConsistent: call from super
     @Override
     public S getSignature() {
         if (composite != null && !invalidate) return composite;

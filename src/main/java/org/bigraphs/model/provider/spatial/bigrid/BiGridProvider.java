@@ -4,15 +4,11 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.bigraphs.model.provider.base.BAbstractBigraphProvider;
 import org.bigraphs.model.provider.base.BLocationModelData;
-import org.bigraphs.framework.core.exceptions.InvalidConnectionException;
-import org.bigraphs.framework.core.exceptions.builder.TypeNotExistsException;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
 import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
 import org.bigraphs.model.provider.spatial.signature.BigridSignatureProvider;
-import org.bigraphs.model.provider.util.MPMathUtils;
 
-import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -129,8 +125,8 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
             if (LOG_DEBUG) {
                 System.out.println("Road: " + each.getName());
             }
-            BLocationModelData.Locale connectedLocaleStart = getConnectedLocale(each.getStartingPoint(), locales);
-            BLocationModelData.Locale connectedLocaleEnd = getConnectedLocale(each.getEndingPoint(), locales);
+            BLocationModelData.Locale connectedLocaleStart = BiGridSupport.getConnectedLocale(each.getStartingPoint(), locales);
+            BLocationModelData.Locale connectedLocaleEnd = BiGridSupport.getConnectedLocale(each.getEndingPoint(), locales);
             if (connectedLocaleStart != null && connectedLocaleEnd != null) {
 
                 String y = localeNameToOuternameMap.get(connectedLocaleStart.getName());
@@ -141,12 +137,12 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
                     localeNameToBigraphMap.get(connectedLocaleEnd.getName()).addChild("Route").linkToOuter(y).top();
                 }
                 if (routeDirection == RouteDirection.UNIDIRECTIONAL_FORWARD) { // from start to end only
-                    connectToOuterName(connectedLocaleStart.getName(), localeNameToBigraphMap, y, localeNameToOuternameMap).addChild("Route").linkToOuter(y2).top();
-                    connectToOuterName(connectedLocaleEnd.getName(), localeNameToBigraphMap, y2, localeNameToOuternameMap);
+                    BiGridSupport.connectToOuterName(connectedLocaleStart.getName(), localeNameToBigraphMap, y, localeNameToOuternameMap).addChild("Route").linkToOuter(y2).top();
+                    BiGridSupport.connectToOuterName(connectedLocaleEnd.getName(), localeNameToBigraphMap, y2, localeNameToOuternameMap);
                 }
                 if (routeDirection == RouteDirection.UNIDIRECTIONAL_BACKWARD) { // from start to end only
-                    connectToOuterName(connectedLocaleStart.getName(), localeNameToBigraphMap, y, localeNameToOuternameMap);
-                    connectToOuterName(connectedLocaleEnd.getName(), localeNameToBigraphMap, y2, localeNameToOuternameMap).addChild("Route").linkToOuter(y).top();
+                    BiGridSupport.connectToOuterName(connectedLocaleStart.getName(), localeNameToBigraphMap, y, localeNameToOuternameMap);
+                    BiGridSupport.connectToOuterName(connectedLocaleEnd.getName(), localeNameToBigraphMap, y2, localeNameToOuternameMap).addChild("Route").linkToOuter(y).top();
                 }
             }
         }
@@ -161,45 +157,11 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
         return builder.createBigraph();
     }
 
-    //TODO move to support?
-    private PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy connectToOuterName(String localeName,
-                                                                                     Map<String, PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy> localeMap,
-                                                                                     String outerName,
-                                                                                     Map<String, String> localeOuterNameMap)
-            throws InvalidConnectionException, TypeNotExistsException {
-        if (!localeOuterNameMap.containsKey(localeName)) {
-            localeOuterNameMap.putIfAbsent(localeName, outerName);
-            return localeMap.get(localeName).top().linkToOuter(outerName);
-        }
-        return localeMap.get(localeName);
-    }
-
-    //TODO move to support
-
-    /**
-     * A point of a route cannot overlap multiple locales (its spatial dimensions) but there can be many routes starting/ending from the same locale.
-     * Locales have the property that they have distinct, non-overlapping realms.
-     * So this method only retrieves a unique locale for a route position if there is any.
-     *
-     * @param roadPosition a starting or ending position of a route element
-     * @param locales      a list of locales to observe
-     * @return a unique local element, where the starting or ending point of a route is within the locale's spatial dimension
-     */
-    private BLocationModelData.Locale getConnectedLocale(Point2D.Float roadPosition, List<BLocationModelData.Locale> locales) {
-        for (BLocationModelData.Locale each : locales) {
-            if (MPMathUtils.coordinatesAreClose(roadPosition, each.getCenter(), 0)) {
-                return each;
-            }
-        }
-        return null;
-    }
-
     public <T extends BiGridProvider> T makeGround(boolean makeGround) {
         this.makeWorldModelGround = makeGround;
         return (T) this;
     }
 
-    //TODO move to support
     public <T extends BiGridProvider> T setRouteDirection(RouteDirection routeDirection) {
         this.routeDirection = routeDirection;
         return (T) this;

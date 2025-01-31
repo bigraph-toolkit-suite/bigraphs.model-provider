@@ -30,9 +30,6 @@ import java.util.List;
 public abstract class BAbstractCompositeProvider<S extends Signature<?>, R, C extends BProvider>
         extends BAbstractProvider<S> {
 
-    //TODO provide custom merge strategy? default is our merge
-    //TODO assert sigConsistent
-
 //    default void mergeNSUri() {}
 //    default void mergeEMetaModelData() {}
 
