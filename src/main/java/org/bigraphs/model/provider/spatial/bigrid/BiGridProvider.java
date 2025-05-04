@@ -7,7 +7,7 @@ import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
 import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
-import org.bigraphs.model.provider.spatial.signature.BigridSignatureProvider;
+import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -36,7 +36,7 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
     protected BiMap<String, Integer> mLocale2Index = HashBiMap.create();
 
     public BiGridProvider(BLocationModelData lmpd) {
-        super(BigridSignatureProvider.getInstance());
+        super(BiSpaceSignatureProvider.getInstance());
         this.lmpd = lmpd;
     }
 

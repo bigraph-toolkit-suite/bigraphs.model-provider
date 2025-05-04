@@ -1,6 +1,7 @@
 package org.bigraphs.model.provider.spatial.quadtree.impl;
 
 import org.bigraphs.model.provider.base.BLocationModelData;
+import org.bigraphs.model.provider.spatial.bigrid.BiGridProvider;
 
 import java.awt.geom.Point2D;
 import java.util.*;
@@ -8,7 +9,7 @@ import java.util.function.Supplier;
 
 /**
  * This converter class helps to create a bigrid-style quadtree.
- * It creates the intermediate representation {@link BLocationModelData} that a {@link org.bigraphs.model.provider.spatial.bigrid.BiGridProvider}
+ * It creates the intermediate representation {@link BLocationModelData} that a {@link BiGridProvider}
  * takes as input.
  *
  * @author Dominik Grzelak

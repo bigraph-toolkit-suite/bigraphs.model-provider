@@ -7,7 +7,7 @@ import org.bigraphs.framework.core.exceptions.InvalidConnectionException;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
 import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
-import org.bigraphs.model.provider.spatial.signature.BigridSignatureProvider;
+import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
 
 import java.awt.geom.Point2D;
 import java.lang.reflect.Method;
@@ -25,7 +25,7 @@ public class BiGridElementFactory {
     private final Map<Integer, String> methodMap;
 
     public static BiGridElementFactory create() {
-        return new BiGridElementFactory(BigridSignatureProvider.getInstance().getSignature());
+        return new BiGridElementFactory(BiSpaceSignatureProvider.getInstance().getSignature());
     }
 
     private BiGridElementFactory(DefaultDynamicSignature signature) {
@@ -43,7 +43,7 @@ public class BiGridElementFactory {
         assertMethodsExist();
     }
 
-    public PureBigraph createElement(int type, int x, int y) throws Exception {
+    public PureBigraph createElement(int type, float x, float y, float stepSize) throws Exception {
         String methodName = methodMap.get(type);
 
         if (methodName == null) {
@@ -51,16 +51,16 @@ public class BiGridElementFactory {
         }
 
         // Get the method by name, assuming it takes two int parameters
-        Method method = this.getClass().getMethod(methodName, int.class, int.class);
+        Method method = this.getClass().getMethod(methodName, float.class, float.class, float.class);
 
         // Invoke the method dynamically
-        return (PureBigraph) method.invoke(this, x, y);
+        return (PureBigraph) method.invoke(this, x, y, stepSize);
     }
 
-    public PureBigraph localeSingleRouteNorth(int x, int y) throws InvalidConnectionException {
+    public PureBigraph localeSingleRouteNorth(float x, float y, float stepSize) throws InvalidConnectionException {
         PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
-        Point2D.Float north = new Point2D.Float(x - 1, y);
+        Point2D.Float north = new Point2D.Float(x - stepSize, y);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameNorth = BiGridSupport.formatParamControl(north);
         PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
@@ -70,10 +70,10 @@ public class BiGridElementFactory {
         return builder.createBigraph();
     }
 
-    public PureBigraph localeSingleRouteEast(int x, int y) throws InvalidConnectionException {
+    public PureBigraph localeSingleRouteEast(float x, float y, float stepSize) throws InvalidConnectionException {
         PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
-        Point2D.Float east = new Point2D.Float(x, y + 1);
+        Point2D.Float east = new Point2D.Float(x, y + stepSize);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameEast = BiGridSupport.formatParamControl(east);
         PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
@@ -83,10 +83,10 @@ public class BiGridElementFactory {
         return builder.createBigraph();
     }
 
-    public PureBigraph localeSingleRouteSouth(int x, int y) throws InvalidConnectionException {
+    public PureBigraph localeSingleRouteSouth(float x, float y, float stepSize) throws InvalidConnectionException {
         PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
-        Point2D.Float south = new Point2D.Float(x + 1, y);
+        Point2D.Float south = new Point2D.Float(x + stepSize, y);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameSouth = BiGridSupport.formatParamControl(south);
         PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
@@ -96,10 +96,10 @@ public class BiGridElementFactory {
         return builder.createBigraph();
     }
 
-    public PureBigraph localeSingleRouteWest(int x, int y) throws InvalidConnectionException {
+    public PureBigraph localeSingleRouteWest(float x, float y, float stepSize) throws InvalidConnectionException {
         PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
-        Point2D.Float west = new Point2D.Float(x, y - 1);
+        Point2D.Float west = new Point2D.Float(x, y - stepSize);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameWest = BiGridSupport.formatParamControl(west);
         PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
@@ -109,7 +109,7 @@ public class BiGridElementFactory {
         return builder.createBigraph();
     }
 
-    public PureBigraph localeBlank(int x, int y) throws InvalidConnectionException {
+    public PureBigraph localeBlank(float x, float y, float stepSize) throws InvalidConnectionException {
         PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
         String localeLinkName = BiGridSupport.formatParamControl(self);
@@ -118,15 +118,15 @@ public class BiGridElementFactory {
         return builder.createBigraph();
     }
 
-    public PureBigraph crossingFour(int x, int y) throws InvalidConnectionException {
+    public PureBigraph crossingFour(float x, float y, float stepSize) throws InvalidConnectionException {
         PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
 
         Point2D.Float self = new Point2D.Float(x, y);
 
-        Point2D.Float north = new Point2D.Float(x - 1, y);
-        Point2D.Float east = new Point2D.Float(x, y + 1);
-        Point2D.Float south = new Point2D.Float(x + 1, y);
-        Point2D.Float west = new Point2D.Float(x, y - 1);
+        Point2D.Float north = new Point2D.Float(x - stepSize, y);
+        Point2D.Float east = new Point2D.Float(x, y + stepSize);
+        Point2D.Float south = new Point2D.Float(x + stepSize, y);
+        Point2D.Float west = new Point2D.Float(x, y - stepSize);
 
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameNorth = BiGridSupport.formatParamControl(north);
@@ -158,7 +158,7 @@ public class BiGridElementFactory {
         for (Map.Entry<Integer, String> entry : methodMap.entrySet()) {
             String methodName = entry.getValue();
             try {
-                Method method = clazz.getMethod(methodName, int.class, int.class);
+                Method method = clazz.getMethod(methodName, float.class, float.class, float.class);
                 if (!method.getReturnType().equals(PureBigraph.class)) {
                     throw new AssertionError("Method " + methodName + " must return PureBigraph");
                 }

@@ -12,19 +12,19 @@ import static org.bigraphs.framework.core.factory.BigraphFactory.pureSignatureBu
  *
  * @author Dominik Grzelak
  */
-public class BigridSignatureProvider extends BAbstractSignatureProvider<DefaultDynamicSignature> {
+public class BiSpaceSignatureProvider extends BAbstractSignatureProvider<DefaultDynamicSignature> {
 
-    private static BigridSignatureProvider instance;
+    private static BiSpaceSignatureProvider instance;
     private static final Object lock = new Object();
 
-    private BigridSignatureProvider() {
+    private BiSpaceSignatureProvider() {
     }
 
-    public static BigridSignatureProvider getInstance() {
+    public static BiSpaceSignatureProvider getInstance() {
         if (instance == null) {
             synchronized (lock) {
                 if (instance == null) {
-                    instance = new BigridSignatureProvider();
+                    instance = new BiSpaceSignatureProvider();
                 }
             }
         }

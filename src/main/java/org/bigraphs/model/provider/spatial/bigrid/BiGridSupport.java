@@ -9,7 +9,7 @@ import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
 import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
 import org.bigraphs.model.provider.base.BLocationModelData;
-import org.bigraphs.model.provider.spatial.signature.BigridSignatureProvider;
+import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
 import org.bigraphs.model.provider.util.MPMathUtils;
 
 import java.awt.geom.Point2D;
@@ -113,7 +113,7 @@ public class BiGridSupport {
     public static class Assertations {
         public static void assertIsBiGrid(PureBigraph bigraph) {
             Set<String> sourceTypeLabels = bigraph.getSignature().getControls().stream().map(c -> c.getNamedType().stringValue()).collect(Collectors.toSet());
-            DefaultDynamicSignature signature = BigridSignatureProvider.getInstance().getSignature();
+            DefaultDynamicSignature signature = BiSpaceSignatureProvider.getInstance().getSignature();
             signature.getControls().stream().map(c -> c.getNamedType().stringValue()).forEach(controllbl -> {
                 if (!sourceTypeLabels.contains(controllbl)) {
                     throw new RuntimeException("Assertion failed (assertIsBigrid): Control label " + controllbl + " not in the given a bigrid-style bigraph.");
