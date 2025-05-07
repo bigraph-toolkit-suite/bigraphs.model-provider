@@ -13,21 +13,31 @@ import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Demonstration of the quadtree implementation
+ * Demonstration of the quadtree implementation.
+ * <p>
+ * GUI windows are opened to demonstrate some quadtree applications.
  *
  * @author Dominik Grzelak
  */
 @Disabled
-public class MyQuadtreeTest implements BigraphUnitTestSupport {
-//    static final String DUMP_PATH = "src/test/resources/dump/bigrid/";
+public class QuadtreeImplTest implements BigraphUnitTestSupport {
 
+    /**
+     * Allow the Swing GUI to be drawn on the screen.
+     */
     @BeforeMethod
     public void setUp() {
         System.setProperty("java.awt.headless", "false");
     }
 
+    /**
+     * A smaller and larger circle is drawn using the point cloud.
+     * <p>
+     * Draws two circular particle filters to approximate the outline of a robotic arm.
+     */
     @Test
     void gui_circle_jitter() throws InterruptedException {
         double areaSizeW = 400;
@@ -63,7 +73,7 @@ public class MyQuadtreeTest implements BigraphUnitTestSupport {
                 quadtree.insert(p);
                 Thread.sleep(50);
             } catch (MaxDepthReachedException e) {
-                e.printStackTrace();
+                System.out.println("Collision detected for point: " + p);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -93,14 +103,13 @@ public class MyQuadtreeTest implements BigraphUnitTestSupport {
                     quadtree.delete(pointsQueried.get(j));
                     quadtree.insert(pointsJittered.get(j));
                 } catch (MaxDepthReachedException e) {
-                    e.printStackTrace();
+                    System.out.println("Collision detected for point: " + pointsQueried.get(j));
                     try {
                         quadtree.insert(pointsQueried.get(j));
                     } catch (MaxDepthReachedException e1) {
-                        e1.printStackTrace();
+                        System.out.println("Collision detected for point: " + pointsQueried.get(j));
                     }
                 }
-//                Thread.sleep(80);
             }
             Thread.sleep(timeSleepBetweenCycles);
             quadtree.cleanup();
@@ -109,26 +118,13 @@ public class MyQuadtreeTest implements BigraphUnitTestSupport {
         while (true) {
             Thread.sleep(1000);
         }
-
-//        System.out.println("Deleting now points");
-//        Thread.sleep(1000);
-//        pointsQueried = quadtree.queryRange(boundary);
-//        System.out.println(pointsQueried.size());
-//        System.out.println(Arrays.toString(pointsQueried.toArray()));
-
-//        List<SomeObjectWithArea> objects = new ArrayList<>();
-//        for (int i = 0; i < 150; i++) {
-//            SomeObjectWithArea obj = new SomeObjectWithArea(
-//                    new Point2D.Double(Math.random() * areaSizeW, Math.random() * areaSizeH), // random position
-//                    new Point2D.Double(Math.random() * 2 - 1, Math.random() * 2 - 1),       // random velocity
-//                    new Point2D.Double(5.0, 5.0),                                           // fixed size
-//                    new Color((float) Math.random(), (float) Math.random(), (float) Math.random()) // random color
-//            );
-//            objects.add(obj);
-//        }
-
     }
 
+    /**
+     * Creates random points and inserts them into the quadtree.
+     * All points are jittered and then inserted into the quadtree again.
+     * If collisions occur, the point is not inserted.
+     */
     @Test
     void gui_jitter() throws InterruptedException {
         double areaSizeW = 400;
@@ -185,11 +181,11 @@ public class MyQuadtreeTest implements BigraphUnitTestSupport {
                     quadtree.delete(pointsQueried.get(j));
                     quadtree.insert(pointsJittered.get(j));
                 } catch (MaxDepthReachedException e) {
-                    e.printStackTrace();
+                    System.out.println("Collision detected for point: " + pointsQueried.get(j));
                     try {
                         quadtree.insert(pointsQueried.get(j));
                     } catch (MaxDepthReachedException e1) {
-                        e1.printStackTrace();
+                        System.out.println("2nd Collision detected for point: " + pointsQueried.get(j));
                     }
                 }
 //                Thread.sleep(80);
@@ -201,26 +197,11 @@ public class MyQuadtreeTest implements BigraphUnitTestSupport {
         while (true) {
             Thread.sleep(1000);
         }
-
-//        System.out.println("Deleting now points");
-//        Thread.sleep(1000);
-//        pointsQueried = quadtree.queryRange(boundary);
-//        System.out.println(pointsQueried.size());
-//        System.out.println(Arrays.toString(pointsQueried.toArray()));
-
-//        List<SomeObjectWithArea> objects = new ArrayList<>();
-//        for (int i = 0; i < 150; i++) {
-//            SomeObjectWithArea obj = new SomeObjectWithArea(
-//                    new Point2D.Double(Math.random() * areaSizeW, Math.random() * areaSizeH), // random position
-//                    new Point2D.Double(Math.random() * 2 - 1, Math.random() * 2 - 1),       // random velocity
-//                    new Point2D.Double(5.0, 5.0),                                           // fixed size
-//                    new Color((float) Math.random(), (float) Math.random(), (float) Math.random()) // random color
-//            );
-//            objects.add(obj);
-//        }
-
     }
 
+    /**
+     * Random points are inserted into the quadtree and then deleted one by one again.
+     */
     @Test
     void gui_random_insertion_and_deletion() throws InterruptedException {
         double areaSizeW = 400;
@@ -254,14 +235,15 @@ public class MyQuadtreeTest implements BigraphUnitTestSupport {
         System.out.println("Creating now points");
         // Insert random points into the quadtree for visualization
         for (int i = 0; i < 50; i++) {
+            Point2D.Double p = null;
             try {
                 int x = (int) (Math.random() * boundary.width);
                 int y = (int) (Math.random() * boundary.height);
-                Point2D.Double p = new Point2D.Double(x, y);
+                p = new Point2D.Double(x, y);
                 quadtree.insert(p);
                 Thread.sleep(50);
             } catch (MaxDepthReachedException e) {
-                e.printStackTrace();
+                System.out.println("Collision detected for point: " + Objects.requireNonNull(p));
             }
         }
 
@@ -281,12 +263,10 @@ public class MyQuadtreeTest implements BigraphUnitTestSupport {
     }
 
     /**
-     * insertion and range query
-     *
-     * @throws InterruptedException
+     * API Test: Insertion and range query
      */
     @Test
-    void test_quadtree() throws InterruptedException {
+    void test_insertion_and_range() throws InterruptedException {
         // Define boundary for quadtree
         QuadtreeImpl.Boundary boundary = new QuadtreeImpl.Boundary(0, 0, 100, 100);
         int maxPointsPerLeaf = 1;  // Configurable max points
@@ -313,10 +293,4 @@ public class MyQuadtreeTest implements BigraphUnitTestSupport {
             System.out.println(point);
         }
     }
-
-    private static double[] pos(final double x, final double y) {
-        return new double[]{x, y};
-    }
-
-
 }

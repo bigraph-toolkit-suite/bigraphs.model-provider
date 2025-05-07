@@ -6,15 +6,23 @@ import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.visualization.SwingGraphStreamer;
 import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.model.provider.spatial.bigrid.*;
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Node;
+import org.graphstream.ui.graphicGraph.GraphicElement;
+import org.graphstream.ui.graphicGraph.GraphicGraph;
+import org.graphstream.ui.swing_viewer.util.DefaultMouseManager;
+import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
+import org.graphstream.ui.view.util.InteractiveElement;
+import org.graphstream.ui.view.util.MouseManager;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BigridCreationTest implements BigraphUnitTestSupport {
     static final String DUMP_PATH = "src/test/resources/dump/bigrid/";
@@ -94,11 +102,12 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
         List<Point2D.Float> originalPoints = List.of(
                 new Point2D.Float(0, 0),
-                new Point2D.Float(1, 1),
-                new Point2D.Float(2, 2)
+                new Point2D.Float(1, 1)
+//                new Point2D.Float(1, 1),
+//                new Point2D.Float(1, 0)
         );
 
-        PureBigraph generated = LinearInterpolationBuilder.generate(originalPoints, 0.5f,0.5f);
+        PureBigraph generated = LinearInterpolationBuilder.generate(originalPoints, 0.25f,0.25f);
         BigraphFileModelManagement.Store.exportAsInstanceModel(generated, System.out);
         BigraphFileModelManagement.Store.exportAsInstanceModel(generated, new FileOutputStream("src/test/resources/dump/generated.xmi"));
         SwingGraphStreamer graphStreamer = new SwingGraphStreamer(generated)
@@ -110,4 +119,5 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
             Thread.sleep(10000);
 
     }
+
 }

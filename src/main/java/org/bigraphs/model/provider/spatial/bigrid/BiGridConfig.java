@@ -26,6 +26,7 @@ public class BiGridConfig {
     public static final int TILE_LOCALE_SE = 7;
     public static final int TILE_LOCALE_SW = 8;
     public static final int TILE_LOCALE_NW = 9;
+    public static final int TILE_LOCALE_1_ROUTE_UNDIRECTED = 10;
 
     // Tile Interfaces, or "faces" (i.e., "edges" of the tiles)
     public interface Faces {

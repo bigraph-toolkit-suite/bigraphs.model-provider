@@ -11,8 +11,8 @@ import java.util.*;
 import static org.bigraphs.framework.core.factory.BigraphFactory.ops;
 
 public class LinearInterpolationBuilder {
-    private static final float stepSize = 0.2f; // cm
-    private static final float minDist = 0.2f;
+    public static final float DEFAULT_StepSize = 0.2f; // cm
+    public static final float DEFAULT_MinDist = 0.2f;
 
     private static final BiGridElementFactory factory = BiGridElementFactory.create();
 
@@ -33,6 +33,7 @@ public class LinearInterpolationBuilder {
         Map<Point2D.Float, PureBigraph> pointToBigraph = new HashMap<>();
         for (Point2D.Float pt : allPoints) {
             PureBigraph g = factory.crossingFour(pt.x, pt.y, stepSize);
+//            PureBigraph g = factory.localeSingleOneRoute(pt.x, pt.y, -stepSize);
             pointToBigraph.put(pt, g);
         }
 
