@@ -35,17 +35,19 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
     @Test
     void create_bigrid_nxm() throws Exception {
-        int m = 4;
-        int n = 4;
+        int m = 2;
+        int n = 5;
         BLocationModelData lmpd = BLocationModelDataFactory.createGrid(m, n, 0, 0, 1, 1f);
         String json = BLocationModelDataFactory.toJson(lmpd);
         writeToFile(json, DUMP_PATH + String.format("bigrid-%dx%d.json", m, n));
 
+
         // Create bigraph grid
         BiGridProvider provider = new BiGridProvider(lmpd)
-                .setRouteDirection(BiGridProvider.RouteDirection.BIDIRECTIONAL);
+                .setRouteDirection(BiGridProvider.RouteDirection.UNIDIRECTIONAL_FORWARD);
         PureBigraph bigrid = provider.getBigraph();
         eb(bigrid, String.format("bigrid-%dx%d", m, n), DUMP_PATH);
+        BigraphFileModelManagement.Store.exportAsInstanceModel(bigrid, new FileOutputStream(String.format("bigrid-%dx%d.xmi", m, n)));
         print(bigrid);
         printMetaModel(bigrid);
         BigraphFileModelManagement.Store.exportAsInstanceModel(bigrid.getSignature(), System.out);
@@ -77,13 +79,19 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
     @Test
     public void test_convexShape_PointList() throws InvalidConnectionException, IOException, InterruptedException {
-        float stepSize = 0.2f;
-        Point2D.Float originPoint = new Point2D.Float(0, 0);
+        float stepSize = 0.25f;
+//        Point2D.Float originPoint = new Point2D.Float(0, 0);
+//        List<Point2D.Float> convexPoints = new LinkedList<>();
+//        convexPoints.add(originPoint);
+//        convexPoints.add(new Point2D.Float(0, 1.35f));
+//        convexPoints.add(new Point2D.Float(4.75f, 0.5f));
+//        convexPoints.add(new Point2D.Float(1.5f, -2.8f));
+
         List<Point2D.Float> convexPoints = new LinkedList<>();
-        convexPoints.add(originPoint);
-        convexPoints.add(new Point2D.Float(0, 1.35f));
-        convexPoints.add(new Point2D.Float(4.75f, 0.5f));
-        convexPoints.add(new Point2D.Float(1.5f, -2.8f));
+        convexPoints.add(new Point2D.Float(0f, 0f));
+        convexPoints.add(new Point2D.Float(-1.24f, 0.58f));
+        convexPoints.add(new Point2D.Float(2.86f, 2.93f));
+        convexPoints.add(new Point2D.Float(3.08f, 0f));
 
         PureBigraph result = ConvexShapeBuilder.generateAsSingle(convexPoints, stepSize, BiGridElementFactory.create());
         BigraphFileModelManagement.Store.exportAsInstanceModel(result, System.out);
@@ -98,7 +106,7 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
     }
 
     @Test
-    public void test_linearRegressionBuilder() throws Exception {
+    public void test_linearInterpolationBuilder() throws Exception {
 
         List<Point2D.Float> originalPoints = List.of(
                 new Point2D.Float(0, 0),
