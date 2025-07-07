@@ -7,6 +7,8 @@
     <groupId>org.bigraphs.model.provider</groupId>
     <artifactId>model-provider-core</artifactId>
     <version>1.1.0</version>
+    <packaging>jar</packaging>
+
     <name>Bigraph Model Provider (Core)</name>
     <description>
         The bigraph model provider is a library that provides common interfaces for data source/data sink
@@ -15,6 +17,7 @@
         It defines a generic and flexible class hierarchy to integrate a wide range of data sources.
     </description>
     <url>https://github.com/bigraph-toolkit-suite/bigraphs.model-provider</url>
+
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
@@ -46,24 +49,14 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+            <id>central</id>
+            <url>https://central.sonatype.com</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>https://central.sonatype.com</url>
         </repository>
     </distributionManagement>
-
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled> <!-- set false to disable snapshot releases -->
-            </snapshots>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-    </repositories>
 
     <properties>
         <!-- General -->
@@ -74,7 +67,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Versions -->
         <bigraph.version>2.1.0</bigraph.version>
-<!--        <spring.data.cdo.version>0.6.0-SNAPSHOT</spring.data.cdo.version>-->
         <guava.version>33.0.0-jre</guava.version>
         <jgrapht.version>1.5.2</jgrapht.version>
         <graphstream.version>2.0</graphstream.version>
@@ -109,11 +101,6 @@
             <artifactId>bigraph-converter</artifactId>
             <version>${bigraph.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.bigraphs.springframework.data</groupId>-->
-<!--            <artifactId>spring-data-cdo</artifactId>-->
-<!--            <version>${spring.data.cdo.version}</version>-->
-<!--        </dependency>-->
         <!-- Required for the CDO standalone server -->
         <dependency>
             <groupId>org.eclipse.platform</groupId>
@@ -152,17 +139,23 @@
             <scope>provided</scope>
         </dependency>
         <!-- Logging -->
-<!--        <dependency>-->
-<!--            <groupId>org.slf4j</groupId>-->
-<!--            <artifactId>slf4j-api</artifactId>-->
-<!--            <version>2.0.12</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.slf4j</groupId>-->
-<!--            <artifactId>slf4j-nop</artifactId>-->
-<!--            <version>2.0.13</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.slf4j</groupId>-->
+        <!--            <artifactId>slf4j-api</artifactId>-->
+        <!--            <version>2.0.12</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.slf4j</groupId>-->
+        <!--            <artifactId>slf4j-nop</artifactId>-->
+        <!--            <version>2.0.13</version>-->
+        <!--            <scope>provided</scope>-->
+        <!--        </dependency>-->
+        <!-- Deployment -->
+        <dependency>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.8.0</version>
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -225,18 +218,16 @@
                     <version>3.4.2</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.7.0</version>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>0.8.0</version>
                     <extensions>true</extensions>
                     <configuration>
-                        <serverId>ossrh</serverId>
-                        <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                        <!-- With the property autoReleaseAfterClose set to false you can manually inspect the staging
-                        repository in the Nexus Repository Manager and trigger a release of the staging repository
-                        later with mvn nexus-staging:release If you find something went wrong you can drop the staging
-                        repository with mvn nexus-staging:drop -->
-                        <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                        <publishingServerId>central</publishingServerId>
+                        <!--                        <autoPublish>true</autoPublish>-->
+                        <!--                        <waitUntil>published</waitUntil>-->
+                        <autoPublish>false</autoPublish>
+                        <waitUntil>validated</waitUntil>
                     </configuration>
                 </plugin>
             </plugins>
@@ -296,8 +287,8 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
@@ -341,8 +332,8 @@
                         <artifactId>maven-deploy-plugin</artifactId>
                     </plugin>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>
