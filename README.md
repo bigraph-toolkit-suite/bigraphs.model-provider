@@ -1,5 +1,7 @@
 # Bigraph Model Provider
 
+> **Latest Version:** 1.1.0
+
 The Bigraph Model Provider is a flexible library designed for native bigraphical applications that are based on so-called _world models_. 
 This library offers a set of standardized interfaces for querying, managing and integrating bigraphical models, making it easy to connect with various data sources and sinks.
 
@@ -69,24 +71,31 @@ In `settings.xml` should be a profile and server configuration both with the `<i
 - Listing keys: `gpg --list-keys --keyid-format short`
 - The `pom.xml` must also conform to the minimal requirements containing all relevant tags as required by Sonatype.
 
-**Snapshot Deployment**
+[//]: # (**Snapshot Deployment**)
 
-Execute the following goals to deploy a SNAPSHOT release of the Java artifact to the snapshot repository:
+[//]: # ()
+[//]: # (Execute the following goals to deploy a SNAPSHOT release of the Java artifact to the snapshot repository:)
 
-```shell
-# Use the default settings.xml located at ~/.m2/
-mvn clean deploy -P ossrh -DskipTests
-# mvn clean deploy -P ossrh
-```
+[//]: # ()
+[//]: # (```shell)
 
-- The version tag in the `pom.xml` must be suffixed with `-SNAPSHOT`.´
+[//]: # (# Use the default settings.xml located at ~/.m2/)
+
+[//]: # (mvn clean deploy -P central -DskipTests)
+
+[//]: # (# mvn clean deploy -P ossrh)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (- The version tag in the `pom.xml` must be suffixed with `-SNAPSHOT`.´)
 
 **Release Deployment**
 
 To perform a release deployment, execute:
 ```shell
-mvn clean deploy -P release,ossrh -DskipTests
-# mvn clean deploy -P release,ossrh
+mvn clean deploy -P release,central -DskipTests
+# mvn clean deploy -P release,central
 ```
 - The SNAPSHOT suffix must be removed from the version tag
 - Artifacts must be manually released for Release Deployments in the Nexus Repository Manager.
