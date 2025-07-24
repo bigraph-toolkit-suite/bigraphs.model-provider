@@ -1,6 +1,6 @@
 # Bigraph Model Provider
 
-> **Latest Version:** 1.1.0
+> **Latest Version:** 1.1.1
 
 The Bigraph Model Provider is a flexible library designed for native bigraphical applications that are based on so-called _world models_. 
 This library offers a set of standardized interfaces for querying, managing and integrating bigraphical models, making it easy to connect with various data sources and sinks.
@@ -37,7 +37,7 @@ all providers are signature providers since every bigraphical model
 <dependency>
     <groupId>org.bigraphs.model.provider</groupId>
     <artifactId>model-provider-core</artifactId>
-    <version>${version}</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
@@ -94,7 +94,7 @@ In `settings.xml` should be a profile and server configuration both with the `<i
 
 To perform a release deployment, execute:
 ```shell
-mvn clean deploy -P release,central -DskipTests
+$ mvn clean deploy -P release,central -DskipTests
 # mvn clean deploy -P release,central
 ```
 - The SNAPSHOT suffix must be removed from the version tag
