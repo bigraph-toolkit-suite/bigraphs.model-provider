@@ -1,11 +1,16 @@
 package org.bigraphs.model.provider.test;
 
 import org.bigraphs.framework.core.BigraphFileModelManagement;
+import org.bigraphs.framework.core.exceptions.IncompatibleSignatureException;
 import org.bigraphs.framework.core.exceptions.InvalidConnectionException;
+import org.bigraphs.framework.core.exceptions.operations.IncompatibleInterfaceException;
+import org.bigraphs.framework.core.factory.BigraphFactory;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
+import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
 import org.bigraphs.framework.visualization.SwingGraphStreamer;
 import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.model.provider.spatial.bigrid.*;
+import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.graphicGraph.GraphicElement;
@@ -24,6 +29,9 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.bigraphs.framework.core.factory.BigraphFactory.ops;
+import static org.bigraphs.framework.core.factory.BigraphFactory.pureBuilder;
+
 public class BigridCreationTest implements BigraphUnitTestSupport {
     static final String DUMP_PATH = "src/test/resources/dump/bigrid/";
 
@@ -31,6 +39,34 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
     public void setUp() {
         System.setProperty("java.awt.headless", "false");
         System.setProperty("org.graphstream.ui", "swing");
+    }
+
+    @Test
+    public void test_elementary() throws InvalidConnectionException, IncompatibleSignatureException, IncompatibleInterfaceException, InterruptedException {
+        DefaultDynamicSignature sig = BiSpaceSignatureProvider.getInstance().getSignature();
+        PureBigraph a1 = pureBuilder(sig).createRoot()
+                .addChild("Locale", "y0").down().addChild("Route", "y1")
+                .up()
+                .addChild("Locale", "y1")
+                .createBigraph();
+
+        GUI(a1, true, true);
+
+        PureBigraph b1 = pureBuilder(sig).createRoot()
+                .addChild("Locale", "y0").down().addChild("Route", "y1")
+                .createBigraph();
+        GUI(b1, true, true);
+
+        PureBigraph b2 = pureBuilder(sig).createRoot()
+                .addChild("Locale", "y1")
+                .createBigraph();
+        GUI(b2, true, true);
+        PureBigraph b3 = ops(b1).merge(b2).getOuterBigraph();
+        GUI(b3, true, true);
+
+        while (true) {
+            Thread.sleep(100);
+        }
     }
 
     @Test
@@ -74,12 +110,12 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
         graphStreamer.prepareSystemEnvironment();
         Viewer graphViewer = graphStreamer.getGraphViewer();
         while (true)
-            Thread.sleep(10000);
+            Thread.sleep(12000);
     }
 
     @Test
     public void test_convexShape_PointList() throws InvalidConnectionException, IOException, InterruptedException {
-        float stepSize = 0.25f;
+        float stepSize = 0.45f;
 //        Point2D.Float originPoint = new Point2D.Float(0, 0);
 //        List<Point2D.Float> convexPoints = new LinkedList<>();
 //        convexPoints.add(originPoint);
@@ -115,7 +151,7 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 //                new Point2D.Float(1, 0)
         );
 
-        PureBigraph generated = LinearInterpolationBuilder.generate(originalPoints, 0.25f,0.25f);
+        PureBigraph generated = LinearInterpolationBuilder.generate(originalPoints, 0.25f, 0.25f);
         BigraphFileModelManagement.Store.exportAsInstanceModel(generated, System.out);
         BigraphFileModelManagement.Store.exportAsInstanceModel(generated, new FileOutputStream("src/test/resources/dump/generated.xmi"));
         SwingGraphStreamer graphStreamer = new SwingGraphStreamer(generated)

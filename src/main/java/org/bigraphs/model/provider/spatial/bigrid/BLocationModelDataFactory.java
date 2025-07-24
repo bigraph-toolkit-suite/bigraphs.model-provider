@@ -30,7 +30,10 @@ public class BLocationModelDataFactory {
                 float x = startX + i * stepSizeX;
                 float y = startY + j * stepSizeY;
                 String name = "v" + (i * n + j);
-                locales.add(BLocationModelData.Locale.builder().name(name).center(new Point2D.Float(x, y)).build());
+                locales.add(BLocationModelData.Locale.builder().name(name).center(new Point2D.Float(x, y))
+                                .width(stepSizeX)
+                                .depth(stepSizeY)
+                        .build());
             }
         }
 

@@ -4,6 +4,8 @@ import org.bigraphs.framework.core.Bigraph;
 import org.bigraphs.framework.core.BigraphFileModelManagement;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.visualization.BigraphGraphvizExporter;
+import org.bigraphs.framework.visualization.SwingGraphStreamer;
+import org.graphstream.ui.view.Viewer;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +15,15 @@ import java.nio.file.StandardOpenOption;
 import java.util.function.Supplier;
 
 public interface BigraphUnitTestSupport {
+
+    default Viewer GUI(PureBigraph bigraph, boolean renderSites, boolean renderRoots) {
+        SwingGraphStreamer graphStreamer = new SwingGraphStreamer(bigraph)
+                .renderSites(renderSites)
+                .renderRoots(renderRoots);
+        graphStreamer.prepareSystemEnvironment();
+        Viewer graphViewer = graphStreamer.getGraphViewer();
+        return graphViewer;
+    }
 
     default void eb(Bigraph<?> bigraph, String name, String basePath) {
         eb(bigraph, name, basePath, true);
