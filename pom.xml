@@ -13,7 +13,7 @@
     <description>
         The bigraph model provider is a library that provides common interfaces for data source/data sink
         infrastructures for native bigraphical applications.
-        It provides facilities to supply and store bigraphical models.
+        Generally, it provides structural facilities to transport (supply and store) bigraphical models.
         It defines a generic and flexible class hierarchy to integrate a wide range of data sources.
     </description>
     <url>https://github.com/bigraph-toolkit-suite/bigraphs.model-provider</url>
