@@ -47,22 +47,25 @@ public class BiGridSupport {
         return String.format("C_%s__%s", formattedX, formattedY);
     }
 
+    // Locale-independent
     public static String formatCoordinate(float value) {
-        // Check if the value is negative
         boolean isNegative = value < 0;
-
-        // Take the absolute value for easier processing
         value = Math.abs(value);
 
-        // Split the float value into integer and decimal parts
-        String[] parts = String.format("%.2f", value).split("\\.");
+        int integerPart = (int) value;
+        int fractionalPart = Math.round((value - integerPart) * 100); // 2 decimal places
 
-        // Format the string according to the template
-        String formattedString = String.format("%s_%s", isNegative ? "N" + parts[0] : parts[0], parts[1]);
+        String prefix = isNegative ? "N" : "";
 
-        return formattedString;
+        return String.format("%s%d_%02d", prefix, integerPart, fractionalPart);
     }
 
+    /**
+     * Opposite method to formatParamControl().
+     *
+     * @param formattedString output of formatParamControl()
+     * @return the original float value
+     */
     public static Point2D.Float parseParamControl(String formattedString) throws IllegalArgumentException {
         if (formattedString == null || !formattedString.startsWith("C_") || !formattedString.contains("__")) {
             throw new IllegalArgumentException("Invalid format");
@@ -70,14 +73,18 @@ public class BiGridSupport {
 
         try {
             String[] parts = formattedString.substring(2).split("__");
-            parts[0] = parts[0].replace("N", "-").replace("_", ".");
-            float x = Float.parseFloat(parts[0]);
-            parts[1] = parts[1].replace("N", "-").replace("_", ".");
-            float y = Float.parseFloat(parts[1]);
+            float x = parseCoordinate(parts[0]);
+            float y = parseCoordinate(parts[1]);
             return new Point2D.Float(x, y);
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid format", e);
         }
+    }
+
+    // Locale-independent
+    private static float parseCoordinate(String part) {
+        part = part.replace("N", "-").replace("_", ".");
+        return Float.parseFloat(part);
     }
 
     public static PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy connectToOuterName(String localeName,
@@ -146,11 +153,7 @@ public class BiGridSupport {
                                     .getIndex();
                         }
                     } catch (IllegalArgumentException e) { // from parseParamControl
-                        //                    e.printStackTrace();
-                        //                    System.out.println("No coordinate control: " + x.getControl());
                     } catch (NoSuchElementException e) { // from orElseThrow
-                        //                    e.printStackTrace();
-                        //                    System.out.println("Contains no site: " + x.getControl());
                     }
                 }
             }
