@@ -68,7 +68,7 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
             getLocationModelData().getLocaleNameToCoordinates().get(each.getName()).add(each.getCenter());
         }
 
-        Supplier<String> nameSupplier = createNameSupplier("y");
+//        Supplier<String> nameSupplier = createNameSupplier("y");
         PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(getSignature());
         Map<String, PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy> localeNameToBigraphMap = new LinkedHashMap<>();
         Map<String, String> localeNameToOuternameMap = new LinkedHashMap<>();
@@ -98,7 +98,11 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
             String nodeId = localeNameToBigraphMap.get(each.getName()).getLastCreatedNode().getName();
             assert nodeId.equalsIgnoreCase(each.getName());
             lmpd.getBNodeIdToExternalLocaleName().put(nodeId, each.getName());
-            localeNameToOuternameMap.put(nodeId, nameSupplier.get());
+
+//            localeNameToOuternameMap.put(nodeId, nameSupplier.get());
+            String coordLabel = BiGridSupport.formatParamControl(each.getCenter());
+            localeNameToOuternameMap.put(nodeId, coordLabel);
+
             localeNameToBigraphMap.get(nodeId).top().linkToOuter(localeNameToOuternameMap.get(nodeId));
 
             // Store original order of locales processed here
