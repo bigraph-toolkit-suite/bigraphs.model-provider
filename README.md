@@ -1,6 +1,6 @@
 # Bigraph Model Provider
 
-> **Latest Version:** 1.1.1
+> **Latest Version:** 1.1.3
 
 The Bigraph Model Provider is a flexible library designed for native bigraphical applications that are based on so-called _world models_. 
 This library offers a set of standardized interfaces for querying, managing and integrating bigraphical models, making it easy to connect with various data sources and sinks.
@@ -37,7 +37,7 @@ all providers are signature providers since every bigraphical model
 <dependency>
     <groupId>org.bigraphs.model.provider</groupId>
     <artifactId>model-provider-core</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.3</version>
 </dependency>
 ```
 
@@ -45,7 +45,7 @@ all providers are signature providers since every bigraphical model
 
 Execute the following goals to run the build:
 ```shell
-mvn clean install
+$ mvn clean install
 ```
 The `*.jar` can be found inside the `./target/` folder of this project.
 The dependency will be also installed in the local Maven repository and
@@ -61,7 +61,7 @@ Maven Sonatype Plugin as used in the project's `pom.xml` file.
 The Maven GPG plugin is used to sign the components for the deployment.
 It relies on the gpg command being installed:
 ```shell
-sudo apt install gnupg2
+$ sudo apt install gnupg2
 ```
 
 and the GPG credentials being available e.g. from `settings.xml` (see [here](https://central.sonatype.org/publish/publish-maven/)).
@@ -70,25 +70,6 @@ In `settings.xml` should be a profile and server configuration both with the `<i
 - More information can be found [here](https://central.sonatype.org/publish/requirements/gpg/).
 - Listing keys: `gpg --list-keys --keyid-format short`
 - The `pom.xml` must also conform to the minimal requirements containing all relevant tags as required by Sonatype.
-
-[//]: # (**Snapshot Deployment**)
-
-[//]: # ()
-[//]: # (Execute the following goals to deploy a SNAPSHOT release of the Java artifact to the snapshot repository:)
-
-[//]: # ()
-[//]: # (```shell)
-
-[//]: # (# Use the default settings.xml located at ~/.m2/)
-
-[//]: # (mvn clean deploy -P central -DskipTests)
-
-[//]: # (# mvn clean deploy -P ossrh)
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (- The version tag in the `pom.xml` must be suffixed with `-SNAPSHOT`.´)
 
 **Release Deployment**
 
