@@ -62,7 +62,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Versions -->
-        <bigraph.version>2.1.0</bigraph.version>
+        <bigraph.version>2.1.1</bigraph.version>
         <guava.version>33.0.0-jre</guava.version>
         <jgrapht.version>1.5.2</jgrapht.version>
         <graphstream.version>2.0</graphstream.version>
