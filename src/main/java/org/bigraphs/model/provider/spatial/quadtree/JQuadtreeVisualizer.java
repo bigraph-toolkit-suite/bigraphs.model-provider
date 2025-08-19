@@ -19,10 +19,12 @@ public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, Key
     private final QuadtreeImpl quadtree;
     private boolean applyTransformations = false;
     private double scale = 1.0; // initial scale factor for zooming
-
     public JQuadtreeVisualizer(QuadtreeImpl quadtree) {
         this.quadtree = quadtree;
-        setPreferredSize(new Dimension((int) quadtree.getBoundary().width, (int) quadtree.getBoundary().height));
+        double[] spans = QuadtreeImpl.getSpans(quadtree.getBoundary());
+        int realWidth = (int) spans[0]; // quadtree.getBoundary().getWidth(); //int) spans[0];
+        int realHeight = (int) spans[1]; // quadtree.getBoundary().getHeight();
+        setPreferredSize(new Dimension(realWidth, realHeight));
         quadtree.addListener(this);  // Register this class as a listener to the quadtree
         addKeyListener(this);
         setFocusable(true);  // Ensure the panel can receive key events
@@ -86,7 +88,7 @@ public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, Key
             int scaledPointX = (int) (point.getX() * scale);
             int scaledPointY = (int) (point.getY() * scale);
             // Use a size that scales with the zoom level
-            int circleSize = (int) (4 * scale);
+            int circleSize = (int) (0.5 * scale);
             g2d.fillOval(scaledPointX - circleSize / 2, scaledPointY - circleSize / 2, circleSize, circleSize);
         }
 

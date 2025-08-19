@@ -22,7 +22,7 @@ public class QuadtreeImpl implements Quadtree {
     // Define a proximity threshold (e.g., 1.0 units)
     @Getter
     @Setter
-    private float proximityDistance = 1.0f;
+    private float proximityDistance = 0.1f;
     private final int maxPoints; // Max points per node
     private final int maxDepth;  // Max depth of the tree
     private final int depth;     // Current depth of this node
@@ -51,7 +51,7 @@ public class QuadtreeImpl implements Quadtree {
      * @param maxDepth  maximum allowed depth
      * @param depth     the current depth
      */
-    public QuadtreeImpl(Boundary rectangle, int maxPoints, int maxDepth, int depth) {
+    public QuadtreeImpl(Boundary rectangle, int maxPoints, int maxDepth, int depth, float proximityDistance) {
         this.boundary = rectangle;
         this.maxPoints = maxPoints;
         this.maxDepth = maxDepth;
@@ -59,6 +59,7 @@ public class QuadtreeImpl implements Quadtree {
         this.points = new ArrayList<>();
         this.divided = false;
         this.parent = null;
+        this.proximityDistance = proximityDistance;
     }
 
     /**
@@ -69,7 +70,7 @@ public class QuadtreeImpl implements Quadtree {
      * @param maxDepth  maximum allowed depth
      */
     public QuadtreeImpl(Boundary rectangle, int maxPoints, int maxDepth) {
-        this(rectangle, maxPoints, maxDepth, 0);
+        this(rectangle, maxPoints, maxDepth, 0, 0.1f);
     }
 
     /**
@@ -195,13 +196,13 @@ public class QuadtreeImpl implements Quadtree {
         double halfWidth = boundary.width / 2;
         double halfHeight = boundary.height / 2;
 
-        northeast = new QuadtreeImpl(new Boundary(x + halfWidth, y, halfWidth, halfHeight), maxPoints, maxDepth, depth + 1);
+        northeast = new QuadtreeImpl(new Boundary(x + halfWidth, y, halfWidth, halfHeight), maxPoints, maxDepth, depth + 1, proximityDistance);
         northeast.parent = this;
-        northwest = new QuadtreeImpl(new Boundary(x, y, halfWidth, halfHeight), maxPoints, maxDepth, depth + 1);
+        northwest = new QuadtreeImpl(new Boundary(x, y, halfWidth, halfHeight), maxPoints, maxDepth, depth + 1, proximityDistance);
         northwest.parent = this;
-        southeast = new QuadtreeImpl(new Boundary(x + halfWidth, y + halfHeight, halfWidth, halfHeight), maxPoints, maxDepth, depth + 1);
+        southeast = new QuadtreeImpl(new Boundary(x + halfWidth, y + halfHeight, halfWidth, halfHeight), maxPoints, maxDepth, depth + 1, proximityDistance);
         southeast.parent = this;
-        southwest = new QuadtreeImpl(new Boundary(x, y + halfHeight, halfWidth, halfHeight), maxPoints, maxDepth, depth + 1);
+        southwest = new QuadtreeImpl(new Boundary(x, y + halfHeight, halfWidth, halfHeight), maxPoints, maxDepth, depth + 1, proximityDistance);
         southwest.parent = this;
 
         // Attach listeners
@@ -248,42 +249,9 @@ public class QuadtreeImpl implements Quadtree {
 
         // After trying all sub-nodes, check if any node was able to remove the point
         if (deleted) {
-            // If the sub-nodes are now empty, consider collapsing the tree
-//                collapse();
-//            if (divided && points.isEmpty()) {
-//                collapse();  // Merge back into a single node if the points are few
-//            }
-//            if (divided && points.size() < maxPoints) {
-//                collapse();  // Merge back into a single node if the points are few
-//            }
             informListeners_delete(point);
             return true;
         }
-
-        // Attempt to remove the point from the current node
-//        if (points.remove(point)) {
-//            // After removing, check if the node should be subdivided further or not
-////            if (divided && points.size() < maxPoints) {
-////                collapse();  // Merge back into a single node if the points are few
-////            }
-//            informListeners_delete(point);
-//            return true;
-//        }
-
-        // If the point is not found in the current node, try to delete from the subdivided nodes
-//        if (divided) {
-//            boolean deleted = northeast.delete(point);
-//            if (!deleted) deleted = northwest.delete(point);
-//            if (!deleted) deleted = southeast.delete(point);
-//            if (!deleted) deleted = southwest.delete(point);
-//            // After trying all sub-nodes, check if any node was able to remove the point
-//            if (deleted) {
-//                // If the sub-nodes are now empty, consider collapsing the tree
-//                collapse();
-//                informListeners_delete(point);
-//                return true;
-//            }
-//        }
 
         return false;  // Point not found
     }
@@ -295,25 +263,12 @@ public class QuadtreeImpl implements Quadtree {
                 southeast != null && southeast.getPoints().isEmpty() &&
                 southwest != null && southwest.getPoints().isEmpty()) {
 
-            // Move points from child nodes back to the current node
-//            points.addAll(northeast.getPoints());
-//            points.addAll(northwest.getPoints());
-//            points.addAll(southeast.getPoints());
-//            points.addAll(southwest.getPoints());
-
             // Clear the child nodes as they are no longer necessary
             northeast = null;
             northwest = null;
             southeast = null;
             southwest = null;
             divided = false;  // Mark the node as undivided
-
-////            // Recursively check if parent nodes can collapse
-//            if (this.depth > 0 && getParent() != null) {
-////                informListeners_delete(null);
-//                // Only propagate collapse upwards if we're not at the root level
-//                getParent().collapse();  // Assuming you have a parent pointer
-//            }
         }
     }
 
@@ -365,18 +320,11 @@ public class QuadtreeImpl implements Quadtree {
             this.height = height;
         }
 
-        //        public boolean contains(Point2D.Double p) {
-//            return !(p.getX() < pos.getX() || p.getY() < pos.getY() || p.getX() >= (pos.getX() + size.getX()) || p.getY() >= (pos.getY() + size.getY()));
-//        }
         public boolean contains(Point2D point) {
             return (point.getX() >= x && point.getX() < x + width &&
                     point.getY() >= y && point.getY() < y + height);
         }
 
-        //        public boolean overlaps(Rect r) {
-//            return (pos.getX() < r.pos.getX() + r.size.getX() && pos.getX() + size.getX() >= r.pos.getX() &&
-//                    pos.getY() < r.pos.getY() + r.size.getY() && pos.getY() + size.getY() >= r.pos.getY());
-//        }
         public boolean intersects(Boundary range) {
             return !(range.x > x + width ||
                     range.x + range.width < x ||
@@ -390,5 +338,29 @@ public class QuadtreeImpl implements Quadtree {
 //                    (r.pos.getY() >= pos.getY()) && (r.pos.getY() + r.size.getY() < pos.getY() + size.getY());
 //        }
 
+    }
+
+    public static double[] getSpans(QuadtreeImpl.Boundary boundary) {
+        double minX = Math.min(boundary.x, boundary.x + boundary.width);
+        double maxX = Math.max(boundary.x, boundary.x + boundary.width);
+        double minY = Math.min(boundary.y, boundary.y + boundary.height);
+        double maxY = Math.max(boundary.y, boundary.y + boundary.height);
+
+        double spanX = maxX - minX;   // true width
+        double spanY = maxY - minY;   // true height
+
+        return new double[]{spanX, spanY};
+    }
+
+    public static int getMaxTreeDepthFrom(QuadtreeImpl.Boundary boundary, double marginPoint) {
+        double[] spans = getSpans(boundary);
+        double spanX = spans[0];
+        double spanY = spans[1];
+
+        // depth ~ ceil(log2(span / margin)) + 1, clamped to >= 0
+        int td0 = (int) Math.ceil(Math.log(spanX / marginPoint) / Math.log(2.0d)) + 1;
+        int td1 = (int) Math.ceil(Math.log(spanY / marginPoint) / Math.log(2.0d)) + 1;
+
+        return Math.max(0, Math.min(td0, td1));
     }
 }
