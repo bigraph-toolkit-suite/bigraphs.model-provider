@@ -9,10 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple implementation of a quadtree supporting maximum depth and maximum allowed points per quads.
- * Moreover, points can be discarded while inserted when a proximity threshold is violated.
+ * Quadtree implementation with configurable capacity and depth.
+ * Supports:
+ * <ul>
+ *   <li>Limiting the number of points per node</li>
+ *   <li>Restricting maximum tree depth</li>
+ *   <li>Rejecting points that violate a proximity threshold</li>
+ * </ul>
  * <p>
- * Quad items are simply {@link Point2D} objects.
+ * Stored elements are {@link Point2D} instances.
  *
  * @author Dominik Grzelak
  */
@@ -99,8 +104,15 @@ public class QuadtreeImpl implements Quadtree {
      * @param point the last point inserted
      */
     private void informListeners_added(Point2D point) {
+        // System.out.println("Inserted point " + point + " at depth " + depth);
         for (QuadtreeListener listener : listeners) {
             listener.onPointInserted(point);
+        }
+    }
+
+    private void informListeners_rejected(Point2D point) {
+        for (QuadtreeListener listener : listeners) {
+            listener.onPointRejected(point);
         }
     }
 
@@ -116,30 +128,58 @@ public class QuadtreeImpl implements Quadtree {
      * @return {@code true} if successfully inserted, otherwise {@code false}
      */
     public boolean insert(Point2D point) {
+        return this.insert(point, false);
+    }
+
+    /**
+     * Insert a point into the quadtree
+     *
+     * @return {@code true} if successfully inserted, otherwise {@code false}
+     */
+    protected boolean insert(Point2D point, boolean isDivision) {
         if (!boundary.contains(point)) {
             return false; // Ignore points outside the boundary
         }
 
-        // Check for proximity or duplicate points within this node
-        for (Point2D existingPoint : points) {
-            if (existingPoint.distance(point) < proximityDistance) {
-//                System.out.println("Point not insert = " + point);
-                return false; // Reject the point if it’s too close to an existing point
+        // Check for proximity or duplicate points within this quad
+        if (isDivision) {
+            for (Point2D existingPoint : points) {
+                if (existingPoint.distance(point) < proximityDistance) {
+                    informListeners_rejected(point);
+                    return false; // Reject the point if it’s too close to an existing point
+                }
+            }
+        } else {
+            // Perform a proximity query against the entire tree:
+            // Define a square window around the point, 1.25 * proximityDistance on each side
+            double side = proximityDistance * 1.25;
+            Boundary window =
+                    new Boundary(point.getX() - proximityDistance,
+                            point.getY() - proximityDistance,
+                            side, side);
+
+            // The root query will traverse only nodes that overlap this window.
+            for (Point2D p : getRoot().queryRange(window)) {
+                // If any point is closer than the threshold, reject the new point.
+                if (p.distance(point) < proximityDistance) {
+                    informListeners_rejected(point);
+                    return false;
+                }
             }
         }
 
         // Check if max depth is reached and we can't subdivide further
         if (depth >= maxDepth) {
-            throw new MaxDepthReachedException("Max depth reached and cannot insert more points in this cell. depth = " + depth);
+            informListeners_rejected(point);
+            return false;
         }
 
         if (divided) {
-            boolean inserted = northeast.insert(point);
-            if (!inserted) inserted = northwest.insert(point);
-            if (!inserted) inserted = southeast.insert(point);
-            if (!inserted) inserted = southwest.insert(point);
+            boolean inserted = northeast.insert(point, true);
+            if (!inserted) inserted = northwest.insert(point, true);
+            if (!inserted) inserted = southeast.insert(point, true);
+            if (!inserted) inserted = southwest.insert(point, true);
             if (inserted) {
-//                System.out.println("Inserted point " + point + " at depth " + depth);
                 informListeners_added(point);
                 return true;
             }
@@ -151,15 +191,24 @@ public class QuadtreeImpl implements Quadtree {
             informListeners_added(point);
             return true;
         } else {
-
             // Subdivide if not already divided and max depth not reached
             if (!divided) {
                 subdivide();
                 return this.insert(point);
             }
         }
-        // If insertion fails in all subdivisions, throw an exception
-        throw new MaxDepthReachedException("Failed to insert point");
+
+        // If insertion fails after all subdivisions
+        informListeners_rejected(point);
+        return false;
+    }
+
+    private QuadtreeImpl getRoot() {
+        QuadtreeImpl q = this;
+        while (q.parent != null) {
+            q = q.parent;
+        }
+        return q;
     }
 
     /**
@@ -174,13 +223,7 @@ public class QuadtreeImpl implements Quadtree {
         southeast = null;
         southwest = null;
         divided = false;
-        point2DS.forEach(p -> {
-            try {
-                insert(p);
-            } catch (NullPointerException e) {
-//                e.printStackTrace();
-            }
-        });
+        point2DS.forEach(this::insert);
     }
 
     private void applyListeners(QuadtreeImpl quadtree, List<QuadtreeListener> listeners) {
@@ -215,11 +258,11 @@ public class QuadtreeImpl implements Quadtree {
 
         // Reinsert all points into the child nodes
         for (Point2D point : points) {
-            if (!northeast.insert(point) &&
-                    !northwest.insert(point) &&
-                    !southeast.insert(point) &&
-                    !southwest.insert(point)) {
-                throw new IllegalStateException("Point could not be reinserted into a child node.");
+            if (!northeast.insert(point, true) &&
+                    !northwest.insert(point, true) &&
+                    !southeast.insert(point, true) &&
+                    !southwest.insert(point, true)) {
+                return;
             }
         }
 
@@ -256,22 +299,6 @@ public class QuadtreeImpl implements Quadtree {
         return false;  // Point not found
     }
 
-    private void collapse() {
-        // If all child nodes are empty, collapse the quadtree
-        if (northeast != null && northeast.getPoints().isEmpty() &&
-                northwest != null && northwest.getPoints().isEmpty() &&
-                southeast != null && southeast.getPoints().isEmpty() &&
-                southwest != null && southwest.getPoints().isEmpty()) {
-
-            // Clear the child nodes as they are no longer necessary
-            northeast = null;
-            northwest = null;
-            southeast = null;
-            southwest = null;
-            divided = false;  // Mark the node as undivided
-        }
-    }
-
     /**
      * Query points within a range
      *
@@ -299,6 +326,30 @@ public class QuadtreeImpl implements Quadtree {
         }
 
         return found;
+    }
+
+    public static double[] getSpans(QuadtreeImpl.Boundary boundary) {
+        double minX = Math.min(boundary.x, boundary.x + boundary.width);
+        double maxX = Math.max(boundary.x, boundary.x + boundary.width);
+        double minY = Math.min(boundary.y, boundary.y + boundary.height);
+        double maxY = Math.max(boundary.y, boundary.y + boundary.height);
+
+        double spanX = maxX - minX;   // true width
+        double spanY = maxY - minY;   // true height
+
+        return new double[]{spanX, spanY};
+    }
+
+    public static int getMaxTreeDepthFrom(QuadtreeImpl.Boundary boundary, double marginPoint) {
+        double[] spans = getSpans(boundary);
+        double spanX = spans[0];
+        double spanY = spans[1];
+
+        // depth ~ ceil(log2(span / margin)) + 1, clamped to >= 0
+        int td0 = (int) Math.ceil(Math.log(spanX / marginPoint) / Math.log(2.0d)) + 1;
+        int td1 = (int) Math.ceil(Math.log(spanY / marginPoint) / Math.log(2.0d)) + 1;
+
+        return Math.max(0, Math.min(td0, td1));
     }
 
     /**
@@ -332,35 +383,34 @@ public class QuadtreeImpl implements Quadtree {
                     range.y + range.height < y);
         }
 
-        // TODO add:
-//        public boolean contains(Rect r) {
-//            return (r.pos.getX() >= pos.getX()) && (r.pos.getX() + r.size.getX() < pos.getX() + size.getX()) &&
-//                    (r.pos.getY() >= pos.getY()) && (r.pos.getY() + r.size.getY() < pos.getY() + size.getY());
-//        }
+        /**
+         * Checks if the given {@code Boundary} is fully contained in this one.
+         * Uses the same edge semantics as {@link #contains(Point2D)}:
+         * inclusive on min edges, exclusive on max edges.
+         *
+         * @param other boundary to test
+         * @return {@code true} if fully inside, otherwise {@code false}
+         */
+        public boolean contains(Boundary other) {
+            if (other == null) {
+                return false;
+            }
 
-    }
+            // normalise this boundary to min/max coordinates
+            double thisMinX = Math.min(x, x + width);
+            double thisMaxX = Math.max(x, x + width);
+            double thisMinY = Math.min(y, y + height);
+            double thisMaxY = Math.max(y, y + height);
 
-    public static double[] getSpans(QuadtreeImpl.Boundary boundary) {
-        double minX = Math.min(boundary.x, boundary.x + boundary.width);
-        double maxX = Math.max(boundary.x, boundary.x + boundary.width);
-        double minY = Math.min(boundary.y, boundary.y + boundary.height);
-        double maxY = Math.max(boundary.y, boundary.y + boundary.height);
+            // normalise the other boundary to min/max coordinates
+            double otherMinX = Math.min(other.x, other.x + other.width);
+            double otherMaxX = Math.max(other.x, other.x + other.width);
+            double otherMinY = Math.min(other.y, other.y + other.height);
+            double otherMaxY = Math.max(other.y, other.y + other.height);
 
-        double spanX = maxX - minX;   // true width
-        double spanY = maxY - minY;   // true height
-
-        return new double[]{spanX, spanY};
-    }
-
-    public static int getMaxTreeDepthFrom(QuadtreeImpl.Boundary boundary, double marginPoint) {
-        double[] spans = getSpans(boundary);
-        double spanX = spans[0];
-        double spanY = spans[1];
-
-        // depth ~ ceil(log2(span / margin)) + 1, clamped to >= 0
-        int td0 = (int) Math.ceil(Math.log(spanX / marginPoint) / Math.log(2.0d)) + 1;
-        int td1 = (int) Math.ceil(Math.log(spanY / marginPoint) / Math.log(2.0d)) + 1;
-
-        return Math.max(0, Math.min(td0, td1));
+            // containment: inclusive on min edges, exclusive on max edges
+            return otherMinX >= thisMinX && otherMaxX < thisMaxX &&
+                    otherMinY >= thisMinY && otherMaxY < thisMaxY;
+        }
     }
 }

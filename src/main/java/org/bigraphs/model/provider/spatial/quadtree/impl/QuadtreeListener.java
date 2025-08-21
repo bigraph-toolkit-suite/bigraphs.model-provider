@@ -8,7 +8,15 @@ import java.awt.geom.Point2D;
  * @author Dominik Grzelak
  */
 public interface QuadtreeListener {
-    void onPointInserted(Point2D point);
+    default void onPointInserted(Point2D point) {
 
-    void onPointDeleted(Point2D point);
+    }
+
+    default void onPointRejected(Point2D point) {
+
+    }
+
+    default void onPointDeleted(Point2D point) {
+        
+    }
 }

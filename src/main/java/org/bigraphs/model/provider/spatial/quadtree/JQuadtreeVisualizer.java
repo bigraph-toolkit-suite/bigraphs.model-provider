@@ -19,8 +19,10 @@ public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, Key
     private final QuadtreeImpl quadtree;
     private boolean applyTransformations = false;
     private double scale = 1.0; // initial scale factor for zooming
+
     public JQuadtreeVisualizer(QuadtreeImpl quadtree) {
         this.quadtree = quadtree;
+//        setPreferredSize(new Dimension((int) quadtree.getBoundary().width, (int) quadtree.getBoundary().height));
         double[] spans = QuadtreeImpl.getSpans(quadtree.getBoundary());
         int realWidth = (int) spans[0]; // quadtree.getBoundary().getWidth(); //int) spans[0];
         int realHeight = (int) spans[1]; // quadtree.getBoundary().getHeight();
@@ -36,10 +38,7 @@ public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, Key
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-
-        AffineTransform originalTransform = g2d.getTransform();
         g2d.scale(scale, scale);
-
 
         // Apply transformations if the flag is true
         if (applyTransformations) {
@@ -60,11 +59,6 @@ public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, Key
 
         // Draw the quadtree structure recursively
         drawQuadtree(g2d, quadtree);
-
-//        if (applyTransformations) {
-//        g2d.setTransform(originalTransform);
-//         }
-
     }
 
     private void drawQuadtree(Graphics2D g2d, QuadtreeImpl node) {
@@ -84,11 +78,10 @@ public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, Key
         // Draw the points in this node
         g2d.setColor(Color.RED); // Color for points
         for (Point2D point : node.getPoints()) {
-//            g2d.fillOval((int) point.getX() - 2, (int) point.getY() - 2, 4, 4); // Small circles for points
             int scaledPointX = (int) (point.getX() * scale);
             int scaledPointY = (int) (point.getY() * scale);
             // Use a size that scales with the zoom level
-            int circleSize = (int) (0.5 * scale);
+            int circleSize = (int) (4 * scale);
             g2d.fillOval(scaledPointX - circleSize / 2, scaledPointY - circleSize / 2, circleSize, circleSize);
         }
 
@@ -104,6 +97,11 @@ public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, Key
     @Override
     public void onPointInserted(Point2D point) {
         repaint(); // Repaint the panel whenever a point is inserted
+    }
+
+    @Override
+    public void onPointRejected(Point2D point) {
+        repaint();
     }
 
     @Override

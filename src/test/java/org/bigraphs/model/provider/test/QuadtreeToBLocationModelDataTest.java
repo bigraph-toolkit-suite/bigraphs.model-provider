@@ -5,7 +5,6 @@ import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.model.provider.spatial.bigrid.BLocationModelDataFactory;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridProvider;
 import org.bigraphs.model.provider.spatial.quadtree.JQuadtreeVisualizer;
-import org.bigraphs.model.provider.spatial.quadtree.impl.MaxDepthReachedException;
 import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeImpl;
 import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeConvert;
 import org.junit.jupiter.api.Disabled;
@@ -62,15 +61,11 @@ public class QuadtreeToBLocationModelDataTest implements BigraphUnitTestSupport 
         System.out.println("Creating now points");
         // Insert random points into the quadtree for visualization
         for (int i = 0; i < 12; i++) {
-            try {
-                int x = (int) (Math.random() * boundary.width);
-                int y = (int) (Math.random() * boundary.height);
-                Point2D.Double p = new Point2D.Double(x, y);
-                quadtree.insert(p);
-                Thread.sleep(50);
-            } catch (MaxDepthReachedException e) {
-                e.printStackTrace();
-            }
+            int x = (int) (Math.random() * boundary.width);
+            int y = (int) (Math.random() * boundary.height);
+            Point2D.Double p = new Point2D.Double(x, y);
+            quadtree.insert(p);
+            Thread.sleep(50);
         }
 
         Thread.sleep(250);
