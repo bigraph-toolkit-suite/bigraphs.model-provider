@@ -61,14 +61,14 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
             System.out.println(point);
         }
 
-        JFrame frame = new JFrame("Agent Position with Jitter (Simulation)");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new JQuadtreeVisualizer(quadtree));
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+//        JFrame frame = new JFrame("Agent Position with Jitter (Simulation)");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.add(new JQuadtreeVisualizer(quadtree));
+//        frame.pack();
+//        frame.setLocationRelativeTo(null);
+//        frame.setVisible(true);
 
-        Thread.sleep(60 * 5 * 1000);
+//        Thread.sleep(60 * 5 * 1000);
     }
 
     /**
