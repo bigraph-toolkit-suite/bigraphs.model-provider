@@ -4,7 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import lombok.Builder;
 import lombok.Data;
-import org.bigraphs.framework.core.impl.signature.DefaultDynamicControl;
+import org.bigraphs.framework.core.impl.signature.DynamicControl;
 import org.bigraphs.model.provider.BBigraphProvider;
 
 import java.awt.geom.Point2D;
@@ -128,7 +128,7 @@ public class BLocationModelData {
         float width;
         float depth;
 
-        DefaultDynamicControl control;
+        DynamicControl control;
     }
 
     @Data

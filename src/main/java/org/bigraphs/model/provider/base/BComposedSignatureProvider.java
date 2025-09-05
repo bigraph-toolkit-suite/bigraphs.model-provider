@@ -1,7 +1,7 @@
 package org.bigraphs.model.provider.base;
 
 import org.bigraphs.framework.core.Signature;
-import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
+import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.framework.core.utils.BigraphUtil;
 import org.bigraphs.model.provider.BAbstractProvider;
 import org.bigraphs.model.provider.BAbstractCompositeProvider;
@@ -40,7 +40,7 @@ public class BComposedSignatureProvider<S extends Signature<?>, R, C extends BSi
         if (composite != null && !invalidate) return composite;
         try {
             Optional<S> accumulatedResult = (Optional<S>) getBProviderParts().stream()
-                    .map(s -> (DefaultDynamicSignature) ((BSignatureProvider<S>) s).getSignature())
+                    .map(s -> (DynamicSignature) ((BSignatureProvider<S>) s).getSignature())
                     .reduce(BigraphUtil::mergeSignatures);
             composite = accumulatedResult.orElseThrow(new Supplier<Throwable>() {
                 @Override
@@ -50,7 +50,7 @@ public class BComposedSignatureProvider<S extends Signature<?>, R, C extends BSi
             });
             return composite;
         } catch (Throwable e) {
-            throw new RuntimeException("Not able to compute signature merge product other than for DefaultDynamicSignature objects", e);
+            throw new RuntimeException("Not able to compute signature merge product other than for DynamicSignature objects", e);
         }
     }
 }

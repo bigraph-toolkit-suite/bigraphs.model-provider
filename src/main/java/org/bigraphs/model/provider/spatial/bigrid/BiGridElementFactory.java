@@ -6,7 +6,7 @@ import org.bigraphs.framework.core.BigraphBuilder;
 import org.bigraphs.framework.core.exceptions.InvalidConnectionException;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
-import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
+import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
 
 import java.awt.geom.Point2D;
@@ -17,7 +17,7 @@ import static org.bigraphs.framework.core.factory.BigraphFactory.pureBuilder;
 
 
 public class BiGridElementFactory {
-    DefaultDynamicSignature signature;
+    DynamicSignature signature;
     @Setter
     @Getter
     boolean withSite = true;
@@ -28,7 +28,7 @@ public class BiGridElementFactory {
         return new BiGridElementFactory(BiSpaceSignatureProvider.getInstance().getSignature());
     }
 
-    private BiGridElementFactory(DefaultDynamicSignature signature) {
+    private BiGridElementFactory(DynamicSignature signature) {
         this.signature = signature;
         // Populate the map with TILE types and corresponding method names
         this.methodMap = Map.of(
@@ -59,81 +59,81 @@ public class BiGridElementFactory {
     }
 
     public PureBigraph localeSingleRouteNorth(float x, float y, float stepSize) throws InvalidConnectionException {
-        PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
+        PureBigraphBuilder<DynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
         Point2D.Float north = new Point2D.Float(x - stepSize, y);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameNorth = BiGridSupport.formatParamControl(north);
-        PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
-                .addChild("Locale", localeLinkName).down();
-        locale.addChild("Route", linkNameNorth);
+        PureBigraphBuilder<DynamicSignature>.Hierarchy locale = builder.root()
+                .child("Locale", localeLinkName).down();
+        locale.child("Route", linkNameNorth);
         addSiteToLocale(locale);
-        return builder.createBigraph();
+        return builder.create();
     }
 
     public PureBigraph localeSingleRouteEast(float x, float y, float stepSize) throws InvalidConnectionException {
-        PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
+        PureBigraphBuilder<DynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
         Point2D.Float east = new Point2D.Float(x, y + stepSize);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameEast = BiGridSupport.formatParamControl(east);
-        PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
-                .addChild("Locale", localeLinkName).down();
-        locale.addChild("Route", linkNameEast);
+        PureBigraphBuilder<DynamicSignature>.Hierarchy locale = builder.root()
+                .child("Locale", localeLinkName).down();
+        locale.child("Route", linkNameEast);
         addSiteToLocale(locale);
-        return builder.createBigraph();
+        return builder.create();
     }
 
     public PureBigraph localeSingleRouteSouth(float x, float y, float stepSize) throws InvalidConnectionException {
-        PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
+        PureBigraphBuilder<DynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
         Point2D.Float south = new Point2D.Float(x + stepSize, y);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameSouth = BiGridSupport.formatParamControl(south);
-        PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
-                .addChild("Locale", localeLinkName).down();
-        locale.addChild("Route", linkNameSouth);
+        PureBigraphBuilder<DynamicSignature>.Hierarchy locale = builder.root()
+                .child("Locale", localeLinkName).down();
+        locale.child("Route", linkNameSouth);
         addSiteToLocale(locale);
-        return builder.createBigraph();
+        return builder.create();
     }
 
     public PureBigraph localeSingleRouteWest(float x, float y, float stepSize) throws InvalidConnectionException {
-        PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
+        PureBigraphBuilder<DynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
         Point2D.Float west = new Point2D.Float(x, y - stepSize);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameWest = BiGridSupport.formatParamControl(west);
-        PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
-                .addChild("Locale", localeLinkName).down();
-        locale.addChild("Route", linkNameWest);
+        PureBigraphBuilder<DynamicSignature>.Hierarchy locale = builder.root()
+                .child("Locale", localeLinkName).down();
+        locale.child("Route", linkNameWest);
         addSiteToLocale(locale);
-        return builder.createBigraph();
+        return builder.create();
     }
 
     public PureBigraph localeSingleOneRoute(float x, float y, float stepSize) throws InvalidConnectionException {
-        PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
+        PureBigraphBuilder<DynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
         Point2D.Float next = new Point2D.Float(x+stepSize, y + stepSize);
         String localeLinkName = BiGridSupport.formatParamControl(self);
         String linkNameNext = BiGridSupport.formatParamControl(next);
-        PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
-                .addChild("Locale", localeLinkName).down();
-        locale.addChild("Route", linkNameNext);
+        PureBigraphBuilder<DynamicSignature>.Hierarchy locale = builder.root()
+                .child("Locale", localeLinkName).down();
+        locale.child("Route", linkNameNext);
         addSiteToLocale(locale);
-        return builder.createBigraph();
+        return builder.create();
     }
 
     public PureBigraph localeBlank(float x, float y, float stepSize) throws InvalidConnectionException {
-        PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
+        PureBigraphBuilder<DynamicSignature> builder = pureBuilder(signature);
         Point2D.Float self = new Point2D.Float(x, y);
         String localeLinkName = BiGridSupport.formatParamControl(self);
-        PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot().addChild("Locale", localeLinkName);
+        PureBigraphBuilder<DynamicSignature>.Hierarchy locale = builder.root().child("Locale", localeLinkName);
         addSiteToLocale(locale);
-        return builder.createBigraph();
+        return builder.create();
     }
 
     public PureBigraph crossingFour(float x, float y, float stepSize) throws InvalidConnectionException {
-        PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(signature);
+        PureBigraphBuilder<DynamicSignature> builder = pureBuilder(signature);
 
         Point2D.Float self = new Point2D.Float(x, y);
 
@@ -148,22 +148,22 @@ public class BiGridElementFactory {
         String linkNameSouth = BiGridSupport.formatParamControl(south);
         String linkNameWest = BiGridSupport.formatParamControl(west);
 
-        PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy locale = builder.createRoot()
-                .addChild("Locale", localeLinkName).down();
+        PureBigraphBuilder<DynamicSignature>.Hierarchy locale = builder.root()
+                .child("Locale", localeLinkName).down();
         locale
-                .addChild("Route", linkNameNorth)
-                .addChild("Route", linkNameEast)
-                .addChild("Route", linkNameSouth)
-                .addChild("Route", linkNameWest)
+                .child("Route", linkNameNorth)
+                .child("Route", linkNameEast)
+                .child("Route", linkNameSouth)
+                .child("Route", linkNameWest)
         ;
         addSiteToLocale(locale);
-        PureBigraph bigraph = builder.createBigraph();
+        PureBigraph bigraph = builder.create();
         return bigraph;
     }
 
-    private void addSiteToLocale(BigraphBuilder.NodeHierarchy<DefaultDynamicSignature> localeHierarchy) {
+    private void addSiteToLocale(BigraphBuilder.NodeHierarchy<DynamicSignature> localeHierarchy) {
         if (withSite) {
-            localeHierarchy.addSite();
+            localeHierarchy.site();
         }
     }
 

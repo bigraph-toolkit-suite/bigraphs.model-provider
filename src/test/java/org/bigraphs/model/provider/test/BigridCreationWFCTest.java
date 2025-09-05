@@ -8,7 +8,7 @@ import org.bigraphs.framework.core.exceptions.InvalidConnectionException;
 import org.bigraphs.framework.core.exceptions.operations.IncompatibleInterfaceException;
 import org.bigraphs.framework.core.impl.elementary.Placings;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
-import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
+import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.framework.core.utils.BigraphUtil;
 import org.bigraphs.framework.visualization.SwingGraphStreamer;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridElementFactory;
@@ -115,13 +115,13 @@ public class BigridCreationWFCTest implements BigraphUnitTestSupport {
 
 
             int widthOfBigrid = bigrid.getRoots().size();
-            Placings<DefaultDynamicSignature>.Merge merge = purePlacings(bigrid.getSignature()).merge(widthOfBigrid);
+            Placings<DynamicSignature>.Merge merge = purePlacings(bigrid.getSignature()).merge(widthOfBigrid);
             bigrid = ops(merge).nesting(bigrid).getOuterBigraph();
 
             System.out.println("BFS: BigraphConnectivityChecker.isFullyConnected(bigrid) = " + BiGridConnectivityChecker.isFullyConnected(bigrid));
             System.out.println("DFS: BigraphConnectivityChecker.isFullyConnected(bigrid) = " + BiGridConnectivityCheckerDFS.isFullyConnected(bigrid));
 
-            EcoreBigraph.Stub<DefaultDynamicSignature> cloned = new EcoreBigraph.Stub<>(bigrid).clone();
+            EcoreBigraph.Stub<DynamicSignature> cloned = new EcoreBigraph.Stub<>(bigrid).clone();
             PureBigraph copy = BigraphUtil.toBigraph(cloned.getMetaModel(), cloned.getInstanceModel(), bigrid.getSignature());
             PureBigraphDecomposerImpl decomposer = BigraphDecomposer.create(BigraphDecomposer.DEFAULT_DECOMPOSITION_STRATEGY);
             decomposer.decompose(copy);

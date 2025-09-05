@@ -4,7 +4,7 @@ import org.bigraphs.framework.core.BigraphEntityType;
 import org.bigraphs.framework.core.Control;
 import org.bigraphs.framework.core.impl.BigraphEntity;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
-import org.bigraphs.framework.core.impl.signature.DefaultDynamicControl;
+import org.bigraphs.framework.core.impl.signature.DynamicControl;
 
 import java.util.*;
 
@@ -27,28 +27,28 @@ public class BiGridConnectivityChecker {
             throw new IllegalArgumentException("Bigrid cannot be null");
         }
 
-        List<BigraphEntity.NodeEntity<DefaultDynamicControl>> locales = getLocales(bigrid);
+        List<BigraphEntity.NodeEntity<DynamicControl>> locales = getLocales(bigrid);
         if (locales.isEmpty()) {
             return true; // An empty bigrid is trivially connected.
         }
 
         // Start traversal from any Locale node
-        Set<BigraphEntity.NodeEntity<DefaultDynamicControl>> visited = new HashSet<>();
-        Queue<BigraphEntity.NodeEntity<DefaultDynamicControl>> queue = new LinkedList<>();
+        Set<BigraphEntity.NodeEntity<DynamicControl>> visited = new HashSet<>();
+        Queue<BigraphEntity.NodeEntity<DynamicControl>> queue = new LinkedList<>();
         queue.add(locales.get(0)); // Start from the first Locale node
 
         while (!queue.isEmpty()) {
-            BigraphEntity.NodeEntity<DefaultDynamicControl> currentLocale = queue.poll();
+            BigraphEntity.NodeEntity<DynamicControl> currentLocale = queue.poll();
             if (!visited.contains(currentLocale)) {
                 visited.add(currentLocale);
-                List<BigraphEntity.NodeEntity<DefaultDynamicControl>> connectedLocales = getConnectedLocales(bigrid, currentLocale);
+                List<BigraphEntity.NodeEntity<DynamicControl>> connectedLocales = getConnectedLocales(bigrid, currentLocale);
                 queue.addAll(connectedLocales);
             }
         }
 
         // Check for unvisited locales
-        List<BigraphEntity.NodeEntity<DefaultDynamicControl>> unvisitedLocales = new ArrayList<>();
-        for (BigraphEntity.NodeEntity<DefaultDynamicControl> locale : locales) {
+        List<BigraphEntity.NodeEntity<DynamicControl>> unvisitedLocales = new ArrayList<>();
+        for (BigraphEntity.NodeEntity<DynamicControl> locale : locales) {
             if (!visited.contains(locale)) {
                 unvisitedLocales.add(locale);
             }
@@ -57,7 +57,7 @@ public class BiGridConnectivityChecker {
         // If there are unvisited locales, print them and return false
         if (!unvisitedLocales.isEmpty()) {
             System.out.println("Unreachable Locale nodes (" + unvisitedLocales.size() + "):");
-            for (BigraphEntity.NodeEntity<DefaultDynamicControl> locale : unvisitedLocales) {
+            for (BigraphEntity.NodeEntity<DynamicControl> locale : unvisitedLocales) {
                 System.out.println("- " + locale.getName() + " (" + locale.getControl().getNamedType().stringValue() + ")");
             }
             return false;
@@ -69,9 +69,9 @@ public class BiGridConnectivityChecker {
     /**
      * Get all Locale-typed nodes in the bigrid.
      */
-    private static List<BigraphEntity.NodeEntity<DefaultDynamicControl>> getLocales(PureBigraph bigrid) {
-        List<BigraphEntity.NodeEntity<DefaultDynamicControl>> locales = new ArrayList<>();
-        for (BigraphEntity.NodeEntity<DefaultDynamicControl> node : bigrid.getNodes()) {
+    private static List<BigraphEntity.NodeEntity<DynamicControl>> getLocales(PureBigraph bigrid) {
+        List<BigraphEntity.NodeEntity<DynamicControl>> locales = new ArrayList<>();
+        for (BigraphEntity.NodeEntity<DynamicControl> node : bigrid.getNodes()) {
             if (node.getControl().getNamedType().stringValue().equals(LOCALE_TYPE)) {
                 locales.add(node);
             }
@@ -82,10 +82,10 @@ public class BiGridConnectivityChecker {
     /**
      * Get all Locale nodes connected to the given Locale node via Route nodes and outer names.
      */
-    private static List<BigraphEntity.NodeEntity<DefaultDynamicControl>> getConnectedLocales(
-            PureBigraph bigrid, BigraphEntity.NodeEntity<DefaultDynamicControl> locale) {
+    private static List<BigraphEntity.NodeEntity<DynamicControl>> getConnectedLocales(
+            PureBigraph bigrid, BigraphEntity.NodeEntity<DynamicControl> locale) {
 
-        List<BigraphEntity.NodeEntity<DefaultDynamicControl>> connectedLocales = new ArrayList<>();
+        List<BigraphEntity.NodeEntity<DynamicControl>> connectedLocales = new ArrayList<>();
 
         // Get all Route nodes nested inside the current Locale node
         for (BigraphEntity<?> route : bigrid.getChildrenOf(locale)) {
@@ -93,7 +93,7 @@ public class BiGridConnectivityChecker {
                 // Find the outer name this Route node links to
                 for (BigraphEntity.Link outerName : bigrid.getIncidentLinksOf((BigraphEntity.NodeEntity<? extends Control<?, ?>>) route)) {
                     // Find all Locale nodes that also link to this outer name
-                    for (BigraphEntity.NodeEntity<DefaultDynamicControl> otherLocale : getLocales(bigrid)) {
+                    for (BigraphEntity.NodeEntity<DynamicControl> otherLocale : getLocales(bigrid)) {
                         if (!otherLocale.equals(locale) && bigrid.getIncidentLinksOf(otherLocale).contains(outerName)) {
                             connectedLocales.add(otherLocale);
                         }

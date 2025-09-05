@@ -3,7 +3,7 @@ package org.bigraphs.model.provider;
 import org.bigraphs.framework.core.HasSignature;
 import org.bigraphs.framework.core.Signature;
 import org.bigraphs.framework.core.datatypes.EMetaModelData;
-import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
+import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 
 import static org.bigraphs.framework.core.factory.BigraphFactory.pureSignatureBuilder;
 
@@ -16,7 +16,7 @@ import static org.bigraphs.framework.core.factory.BigraphFactory.pureSignatureBu
 public interface BSignatureProvider<S extends Signature<?>> extends BProvider, HasSignature<S> {
     S getSignature();
 
-    BSignatureProvider<DefaultDynamicSignature> EMPTY_DYNAMIC_SIGNATURE_PUREBIGRAPH = new BSignatureProvider<>() {
+    BSignatureProvider<DynamicSignature> EMPTY_DYNAMIC_SIGNATURE_PUREBIGRAPH = new BSignatureProvider<>() {
         @Override
         public String getNsUri() {
             return "org.bigraphs.empty";
@@ -28,7 +28,7 @@ public interface BSignatureProvider<S extends Signature<?>> extends BProvider, H
         }
 
         @Override
-        public DefaultDynamicSignature getSignature() {
+        public DynamicSignature getSignature() {
             return pureSignatureBuilder().create(getMetaModelData());
         }
     };

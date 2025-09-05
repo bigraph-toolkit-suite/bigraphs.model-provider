@@ -7,7 +7,7 @@ import org.bigraphs.framework.core.exceptions.builder.TypeNotExistsException;
 import org.bigraphs.framework.core.impl.BigraphEntity;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
-import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
+import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
 import org.bigraphs.model.provider.util.MPMathUtils;
@@ -87,14 +87,14 @@ public class BiGridSupport {
         return Float.parseFloat(part);
     }
 
-    public static PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy connectToOuterName(String localeName,
-                                                                                           Map<String, PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy> localeMap,
+    public static PureBigraphBuilder<DynamicSignature>.Hierarchy connectToOuterName(String localeName,
+                                                                                           Map<String, PureBigraphBuilder<DynamicSignature>.Hierarchy> localeMap,
                                                                                            String outerName,
                                                                                            Map<String, String> localeOuterNameMap)
             throws InvalidConnectionException, TypeNotExistsException {
         if (!localeOuterNameMap.containsKey(localeName)) {
             localeOuterNameMap.putIfAbsent(localeName, outerName);
-            return localeMap.get(localeName).top().linkToOuter(outerName);
+            return localeMap.get(localeName).top().linkOuter(outerName);
         }
         return localeMap.get(localeName);
     }
@@ -120,7 +120,7 @@ public class BiGridSupport {
     public static class Assertations {
         public static void assertIsBiGrid(PureBigraph bigraph) {
             Set<String> sourceTypeLabels = bigraph.getSignature().getControls().stream().map(c -> c.getNamedType().stringValue()).collect(Collectors.toSet());
-            DefaultDynamicSignature signature = BiSpaceSignatureProvider.getInstance().getSignature();
+            DynamicSignature signature = BiSpaceSignatureProvider.getInstance().getSignature();
             signature.getControls().stream().map(c -> c.getNamedType().stringValue()).forEach(controllbl -> {
                 if (!sourceTypeLabels.contains(controllbl)) {
                     throw new RuntimeException("Assertion failed (assertIsBigrid): Control label " + controllbl + " not in the given a bigrid-style bigraph.");

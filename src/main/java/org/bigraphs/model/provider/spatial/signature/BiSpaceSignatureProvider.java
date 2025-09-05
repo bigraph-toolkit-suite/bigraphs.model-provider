@@ -1,6 +1,6 @@
 package org.bigraphs.model.provider.spatial.signature;
 
-import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
+import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.framework.core.impl.signature.DynamicSignatureBuilder;
 import org.bigraphs.model.provider.base.BAbstractSignatureProvider;
 
@@ -12,7 +12,7 @@ import static org.bigraphs.framework.core.factory.BigraphFactory.pureSignatureBu
  *
  * @author Dominik Grzelak
  */
-public class BiSpaceSignatureProvider extends BAbstractSignatureProvider<DefaultDynamicSignature> {
+public class BiSpaceSignatureProvider extends BAbstractSignatureProvider<DynamicSignature> {
 
     private static BiSpaceSignatureProvider instance;
     private static final Object lock = new Object();
@@ -32,15 +32,15 @@ public class BiSpaceSignatureProvider extends BAbstractSignatureProvider<Default
     }
 
     @Override
-    public DefaultDynamicSignature getSignature() {
+    public DynamicSignature getSignature() {
         DynamicSignatureBuilder defaultBuilder = pureSignatureBuilder();
         defaultBuilder
-                .addControl("VarSpace", 0)
-                .addControl("True", 0)
-                .addControl("False", 0)
-                .addControl("Error", 0)
-                .addControl("Locale", 1)
-                .addControl("Route", 1)
+                .add("VarSpace", 0)
+                .add("True", 0)
+                .add("False", 0)
+                .add("Error", 0)
+                .add("Locale", 1)
+                .add("Route", 1)
         ;
         return defaultBuilder.create();
     }

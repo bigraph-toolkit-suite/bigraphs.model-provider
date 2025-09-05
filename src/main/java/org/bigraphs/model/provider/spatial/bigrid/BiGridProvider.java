@@ -6,7 +6,7 @@ import org.bigraphs.model.provider.base.BAbstractBigraphProvider;
 import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
-import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
+import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
 
 import java.util.*;
@@ -21,7 +21,7 @@ import static org.bigraphs.framework.core.factory.BigraphFactory.pureBuilder;
  *
  * @author Dominik Grzelak
  */
-public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSignature, PureBigraph> {
+public class BiGridProvider extends BAbstractBigraphProvider<DynamicSignature, PureBigraph> {
     public enum RouteDirection {
         BIDIRECTIONAL, // good when we do not want to describe all edges, e.g., for fully connected grids
         UNIDIRECTIONAL_FORWARD, // good default, the specified edges are translated as is, no other edges are created than specified
@@ -41,7 +41,7 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
     }
 
     @Override
-    public DefaultDynamicSignature getSignature() {
+    public DynamicSignature getSignature() {
         return signatureProvider.getSignature();
     }
 
@@ -69,8 +69,8 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
         }
 
 //        Supplier<String> nameSupplier = createNameSupplier("y");
-        PureBigraphBuilder<DefaultDynamicSignature> builder = pureBuilder(getSignature());
-        Map<String, PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy> localeNameToBigraphMap = new LinkedHashMap<>();
+        PureBigraphBuilder<DynamicSignature> builder = pureBuilder(getSignature());
+        Map<String, PureBigraphBuilder<DynamicSignature>.Hierarchy> localeNameToBigraphMap = new LinkedHashMap<>();
         Map<String, String> localeNameToOuternameMap = new LinkedHashMap<>();
 
 
@@ -93,7 +93,7 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
             if (makeWorldModelGround) {
                 localeNameToBigraphMap.put(each.getName(), builder.hierarchy("Locale").top());
             } else {
-                localeNameToBigraphMap.put(each.getName(), builder.hierarchy("Locale").addSite().top());
+                localeNameToBigraphMap.put(each.getName(), builder.hierarchy("Locale").site().top());
             }
             String nodeId = localeNameToBigraphMap.get(each.getName()).getLastCreatedNode().getName();
             assert nodeId.equalsIgnoreCase(each.getName());
@@ -103,7 +103,7 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
             String coordLabel = BiGridSupport.formatParamControl(each.getCenter());
             localeNameToOuternameMap.put(nodeId, coordLabel);
 
-            localeNameToBigraphMap.get(nodeId).top().linkToOuter(localeNameToOuternameMap.get(nodeId));
+            localeNameToBigraphMap.get(nodeId).top().linkOuter(localeNameToOuternameMap.get(nodeId));
 
             // Store original order of locales processed here
             // In this state the locale site index == root index
@@ -137,28 +137,28 @@ public class BiGridProvider extends BAbstractBigraphProvider<DefaultDynamicSigna
                 String y2 = localeNameToOuternameMap.get(connectedLocaleEnd.getName());
 
                 if (routeDirection == RouteDirection.BIDIRECTIONAL) { // from start to end and vice versa
-                    localeNameToBigraphMap.get(connectedLocaleStart.getName()).addChild("Route").linkToOuter(y2).top();
-                    localeNameToBigraphMap.get(connectedLocaleEnd.getName()).addChild("Route").linkToOuter(y).top();
+                    localeNameToBigraphMap.get(connectedLocaleStart.getName()).child("Route").linkOuter(y2).top();
+                    localeNameToBigraphMap.get(connectedLocaleEnd.getName()).child("Route").linkOuter(y).top();
                 }
                 if (routeDirection == RouteDirection.UNIDIRECTIONAL_FORWARD) { // from start to end only
-                    BiGridSupport.connectToOuterName(connectedLocaleStart.getName(), localeNameToBigraphMap, y, localeNameToOuternameMap).addChild("Route").linkToOuter(y2).top();
+                    BiGridSupport.connectToOuterName(connectedLocaleStart.getName(), localeNameToBigraphMap, y, localeNameToOuternameMap).child("Route").linkOuter(y2).top();
                     BiGridSupport.connectToOuterName(connectedLocaleEnd.getName(), localeNameToBigraphMap, y2, localeNameToOuternameMap);
                 }
                 if (routeDirection == RouteDirection.UNIDIRECTIONAL_BACKWARD) { // from start to end only
                     BiGridSupport.connectToOuterName(connectedLocaleStart.getName(), localeNameToBigraphMap, y, localeNameToOuternameMap);
-                    BiGridSupport.connectToOuterName(connectedLocaleEnd.getName(), localeNameToBigraphMap, y2, localeNameToOuternameMap).addChild("Route").linkToOuter(y).top();
+                    BiGridSupport.connectToOuterName(connectedLocaleEnd.getName(), localeNameToBigraphMap, y2, localeNameToOuternameMap).child("Route").linkOuter(y).top();
                 }
             }
         }
 
         // Finally, merge all locales under one root
-        PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy root = builder.createRoot();
-        for (PureBigraphBuilder<DefaultDynamicSignature>.Hierarchy each : localeNameToBigraphMap.values()) {
-            root.addChild(each);
+        PureBigraphBuilder<DynamicSignature>.Hierarchy root = builder.root();
+        for (PureBigraphBuilder<DynamicSignature>.Hierarchy each : localeNameToBigraphMap.values()) {
+            root.child(each);
         }
 
         // Finalize the bigraph and return a bigraph object
-        return builder.createBigraph();
+        return builder.create();
     }
 
     public <T extends BiGridProvider> T makeGround(boolean makeGround) {

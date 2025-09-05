@@ -6,7 +6,7 @@ import org.bigraphs.framework.core.exceptions.InvalidConnectionException;
 import org.bigraphs.framework.core.exceptions.operations.IncompatibleInterfaceException;
 import org.bigraphs.framework.core.factory.BigraphFactory;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
-import org.bigraphs.framework.core.impl.signature.DefaultDynamicSignature;
+import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.framework.visualization.SwingGraphStreamer;
 import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.model.provider.spatial.bigrid.*;
@@ -43,23 +43,23 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
     @Test
     public void test_elementary() throws InvalidConnectionException, IncompatibleSignatureException, IncompatibleInterfaceException, InterruptedException {
-        DefaultDynamicSignature sig = BiSpaceSignatureProvider.getInstance().getSignature();
-        PureBigraph a1 = pureBuilder(sig).createRoot()
-                .addChild("Locale", "y0").down().addChild("Route", "y1")
+        DynamicSignature sig = BiSpaceSignatureProvider.getInstance().getSignature();
+        PureBigraph a1 = pureBuilder(sig).root()
+                .child("Locale", "y0").down().child("Route", "y1")
                 .up()
-                .addChild("Locale", "y1")
-                .createBigraph();
+                .child("Locale", "y1")
+                .create();
 
         GUI(a1, true, true);
 
-        PureBigraph b1 = pureBuilder(sig).createRoot()
-                .addChild("Locale", "y0").down().addChild("Route", "y1")
-                .createBigraph();
+        PureBigraph b1 = pureBuilder(sig).root()
+                .child("Locale", "y0").down().child("Route", "y1")
+                .create();
         GUI(b1, true, true);
 
-        PureBigraph b2 = pureBuilder(sig).createRoot()
-                .addChild("Locale", "y1")
-                .createBigraph();
+        PureBigraph b2 = pureBuilder(sig).root()
+                .child("Locale", "y1")
+                .create();
         GUI(b2, true, true);
         PureBigraph b3 = ops(b1).merge(b2).getOuterBigraph();
         GUI(b3, true, true);
@@ -128,6 +128,12 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
         convexPoints.add(new Point2D.Float(-1.24f, 0.58f));
         convexPoints.add(new Point2D.Float(2.86f, 2.93f));
         convexPoints.add(new Point2D.Float(3.08f, 0f));
+
+//        List<Point2D.Float> convexPoints = new LinkedList<>();
+//        convexPoints.add(new Point2D.Float(0f, 0f));
+//        convexPoints.add(new Point2D.Float(0.03f, 2.68f));
+//        convexPoints.add(new Point2D.Float(3.72f, -0.19f));
+//        convexPoints.add(new Point2D.Float(0.88f, -1.57f));
 
         PureBigraph result = ConvexShapeBuilder.generateAsSingle(convexPoints, stepSize, BiGridElementFactory.create());
         BigraphFileModelManagement.Store.exportAsInstanceModel(result, System.out);
