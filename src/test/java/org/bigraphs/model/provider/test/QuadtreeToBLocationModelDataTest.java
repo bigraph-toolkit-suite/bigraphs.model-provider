@@ -1,6 +1,8 @@
 package org.bigraphs.model.provider.test;
 
+import org.bigraphs.framework.core.Bigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
+import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.model.provider.spatial.bigrid.BLocationModelDataFactory;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridProvider;
@@ -13,6 +15,8 @@ import org.testng.annotations.BeforeMethod;
 
 import javax.swing.*;
 import java.awt.geom.Point2D;
+
+import static org.bigraphs.framework.core.factory.BigraphFactory.ops;
 
 /**
  * Demonstration of the quadtree implementation
@@ -76,9 +80,6 @@ public class QuadtreeToBLocationModelDataTest implements BigraphUnitTestSupport 
         System.out.println("dataModel.getLocales().size()=" + dataModel.getLocales().size());
         System.out.println("dataModel.getRoutes().size()=" + dataModel.getRoutes().size());
 
-//        CFMAPF_WorldModelProvider provider = new CFMAPF_WorldModelProvider(dataModel)
-//                .setRouteDirection(BiGridProvider.RouteDirection.BIDIRECTIONAL);
-//        PureBigraph bigrid = provider.getBigraph();
         BiGridProvider provider = new BiGridProvider(dataModel)
                 .setRouteDirection(BiGridProvider.RouteDirection.UNIDIRECTIONAL_FORWARD);
         PureBigraph bigrid = provider.getBigraph();
@@ -86,11 +87,14 @@ public class QuadtreeToBLocationModelDataTest implements BigraphUnitTestSupport 
         String json = BLocationModelDataFactory.toJson(dataModel);
         writeToFile(json, DUMP_PATH + String.format("bigrid-quadtree.json"));
 
-//        SwingGraphStreamer graphStreamer = new SwingGraphStreamer(bigrid)
-//                .renderSites(true)
-//                .renderRoots(false);
-//        graphStreamer.prepareSystemEnvironment();
-//        Viewer graphViewer = graphStreamer.getGraphViewer();
+
+        GUI(bigrid, true, false);
+
+        Bigraph<DynamicSignature> pr = ops(bigrid)
+                .parallelProduct(bigrid)
+                .parallelProduct(bigrid)
+                .getOuterBigraph();
+        GUI((PureBigraph) pr, true, false);
 
         while (true) {
             Thread.sleep(1000);

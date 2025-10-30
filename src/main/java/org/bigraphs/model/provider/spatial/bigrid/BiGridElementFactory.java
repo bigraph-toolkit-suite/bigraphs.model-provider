@@ -28,6 +28,10 @@ public class BiGridElementFactory {
         return new BiGridElementFactory(BiSpaceSignatureProvider.getInstance().getSignature());
     }
 
+    public static BiGridElementFactory create(DynamicSignature signature) {
+        return new BiGridElementFactory(signature);
+    }
+
     private BiGridElementFactory(DynamicSignature signature) {
         this.signature = signature;
         // Populate the map with TILE types and corresponding method names

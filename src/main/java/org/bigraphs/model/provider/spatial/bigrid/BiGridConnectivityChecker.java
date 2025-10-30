@@ -5,6 +5,7 @@ import org.bigraphs.framework.core.Control;
 import org.bigraphs.framework.core.impl.BigraphEntity;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.signature.DynamicControl;
+import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
 
 import java.util.*;
 
@@ -12,10 +13,13 @@ import java.util.*;
  * Utility class to check connectivity properties of bigrid structures.
  * A bigrid is considered fully connected if all Locale nodes can reach each other
  * through Route nodes connected via outer names.
+ * <p>
+ * Implemented as breath-first search.
+ *
+ * @see BiGridConnectivityCheckerDFS
  */
 public class BiGridConnectivityChecker {
-    static final String LOCALE_TYPE = "Locale";
-    static final String ROUTE_TYPE = "Route";
+
     /**
      * Checks if the given bigrid is fully connected.
      *
@@ -72,7 +76,7 @@ public class BiGridConnectivityChecker {
     private static List<BigraphEntity.NodeEntity<DynamicControl>> getLocales(PureBigraph bigrid) {
         List<BigraphEntity.NodeEntity<DynamicControl>> locales = new ArrayList<>();
         for (BigraphEntity.NodeEntity<DynamicControl> node : bigrid.getNodes()) {
-            if (node.getControl().getNamedType().stringValue().equals(LOCALE_TYPE)) {
+            if (node.getControl().getNamedType().stringValue().equals(BiSpaceSignatureProvider.LOCALE_TYPE)) {
                 locales.add(node);
             }
         }
@@ -89,7 +93,7 @@ public class BiGridConnectivityChecker {
 
         // Get all Route nodes nested inside the current Locale node
         for (BigraphEntity<?> route : bigrid.getChildrenOf(locale)) {
-            if (BigraphEntityType.isNode(route) && route.getControl().getNamedType().stringValue().equals(ROUTE_TYPE)) {
+            if (BigraphEntityType.isNode(route) && route.getControl().getNamedType().stringValue().equals(BiSpaceSignatureProvider.ROUTE_TYPE)) {
                 // Find the outer name this Route node links to
                 for (BigraphEntity.Link outerName : bigrid.getIncidentLinksOf((BigraphEntity.NodeEntity<? extends Control<?, ?>>) route)) {
                     // Find all Locale nodes that also link to this outer name

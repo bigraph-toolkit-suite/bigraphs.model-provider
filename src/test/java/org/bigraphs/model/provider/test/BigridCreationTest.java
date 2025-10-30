@@ -80,7 +80,7 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
         // Create bigraph grid
         BiGridProvider provider = new BiGridProvider(lmpd)
-                .setRouteDirection(BiGridProvider.RouteDirection.UNIDIRECTIONAL_FORWARD);
+                .setRouteDirection(BiGridProvider.RouteDirection.BIDIRECTIONAL);
         PureBigraph bigrid = provider.getBigraph();
         eb(bigrid, String.format("bigrid-%dx%d", m, n), DUMP_PATH);
         BigraphFileModelManagement.Store.exportAsInstanceModel(bigrid, new FileOutputStream(String.format("bigrid-%dx%d.xmi", m, n)));
@@ -103,12 +103,8 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 //        Map<Integer, List<BigraphEntity<?>>> partitions = cc.getPartitions();
 //        System.out.println("partitions: " + partitions);
 
+        GUI(bigrid, false, false);
 
-        SwingGraphStreamer graphStreamer = new SwingGraphStreamer(bigrid)
-                .renderSites(false)
-                .renderRoots(false);
-        graphStreamer.prepareSystemEnvironment();
-        Viewer graphViewer = graphStreamer.getGraphViewer();
         while (true)
             Thread.sleep(12000);
     }
@@ -138,11 +134,7 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
         PureBigraph result = ConvexShapeBuilder.generateAsSingle(convexPoints, stepSize, BiGridElementFactory.create());
         BigraphFileModelManagement.Store.exportAsInstanceModel(result, System.out);
         BigraphFileModelManagement.Store.exportAsInstanceModel(result, new FileOutputStream("test.xmi"));
-        SwingGraphStreamer graphStreamer = new SwingGraphStreamer(result)
-                .renderSites(false)
-                .renderRoots(false);
-        graphStreamer.prepareSystemEnvironment();
-        Viewer graphViewer = graphStreamer.getGraphViewer();
+        GUI(result, true, false);
         while (true)
             Thread.sleep(10000);
     }

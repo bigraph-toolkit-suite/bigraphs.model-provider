@@ -15,8 +15,6 @@ import org.bigraphs.model.provider.spatial.bigrid.BiGridElementFactory;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridConnectivityCheckerDFS;
 import org.bigraphs.model.provider.spatial.bigrid.World;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridConnectivityChecker;
-import org.graphstream.ui.swing_viewer.util.DefaultShortcutManager;
-import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -118,6 +116,7 @@ public class BigridCreationWFCTest implements BigraphUnitTestSupport {
             Placings<DynamicSignature>.Merge merge = purePlacings(bigrid.getSignature()).merge(widthOfBigrid);
             bigrid = ops(merge).nesting(bigrid).getOuterBigraph();
 
+            System.out.println("Connectedness");
             System.out.println("BFS: BigraphConnectivityChecker.isFullyConnected(bigrid) = " + BiGridConnectivityChecker.isFullyConnected(bigrid));
             System.out.println("DFS: BigraphConnectivityChecker.isFullyConnected(bigrid) = " + BiGridConnectivityCheckerDFS.isFullyConnected(bigrid));
 
@@ -125,31 +124,23 @@ public class BigridCreationWFCTest implements BigraphUnitTestSupport {
             PureBigraph copy = BigraphUtil.toBigraph(cloned.getMetaModel(), cloned.getInstanceModel(), bigrid.getSignature());
             PureBigraphDecomposerImpl decomposer = BigraphDecomposer.create(BigraphDecomposer.DEFAULT_DECOMPOSITION_STRATEGY);
             decomposer.decompose(copy);
+            System.out.println("\r\nSummary");
             System.out.println("Count: " + decomposer.getUnionFindDataStructure().getCount());
 //            System.out.println("Partitions: " + decomposer.getPartitions());
-            System.out.println("Roots: " + bigrid.getRoots().size());
-            System.out.println("Sites: " + bigrid.getSites().size());
-            System.out.println("Outernames: " + bigrid.getOuterNames().size());
-            System.out.println(bigrid.getInnerNames().size());
-            System.out.println(bigrid.isPrime());
-            System.out.println(bigrid.isGround());
-            System.out.println(bigrid.isDiscrete());
-            System.out.println(bigrid.isEpimorphic());
-            System.out.println(bigrid.isMonomorphic());
-            System.out.println(bigrid.isActive());
-            System.out.println(bigrid.isGuarding());
-            System.out.println(bigrid.isLean());
+            System.out.println("Roots\t: " + bigrid.getRoots().size());
+            System.out.println("Sites\t: " + bigrid.getSites().size());
+            System.out.println("Outer Names\t: " + bigrid.getOuterNames().size());
+            System.out.println("Inner Names\t: " + bigrid.getInnerNames().size());
+            System.out.println("Is Prime\t: " + bigrid.isPrime());
+            System.out.println("Is Ground\t: " + bigrid.isGround());
+            System.out.println("Is Discrete\t: " + bigrid.isDiscrete());
+            System.out.println("Is Epimorphic\t: " + bigrid.isEpimorphic());
+            System.out.println("Is Monomorphic\t: " + bigrid.isMonomorphic());
+            System.out.println("Is Active\t: " + bigrid.isActive());
+            System.out.println("Is Guarding\t: " + bigrid.isGuarding());
+            System.out.println("Is Lean\t: " + bigrid.isLean());
 
-
-
-            SwingGraphStreamer graphStreamer = new SwingGraphStreamer(bigrid)
-                    .renderSites(false)
-                    .renderRoots(false);
-            graphStreamer.prepareSystemEnvironment();
-            Viewer graphViewer = graphStreamer.getGraphViewer();
-            View defaultView = graphViewer.getDefaultView();
-            defaultView.getCamera().setViewPercent(0.6);
-            defaultView.setShortcutManager(new DefaultShortcutManager());
+            GUI(bigrid,false,false);
             while (true)
                 Thread.sleep(10000);
         }

@@ -8,8 +8,17 @@ import org.bigraphs.framework.core.impl.signature.DynamicControl;
 
 import java.util.*;
 
-import static org.bigraphs.model.provider.spatial.bigrid.BiGridConnectivityChecker.ROUTE_TYPE;
+import static org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider.ROUTE_TYPE;
 
+/**
+ * Utility class to check connectivity properties of bigrid structures.
+ * A bigrid is considered fully connected if all Locale nodes can reach each other
+ * through Route nodes connected via outer names.
+ * <p>
+ * Implemented as depth-first search.
+ *
+ * @see BiGridConnectivityChecker
+ */
 public class BiGridConnectivityCheckerDFS {
 
     public static boolean isFullyConnected(PureBigraph bigrid) {
