@@ -1,13 +1,11 @@
 package org.bigraphs.model.provider.spatial.quadtree;
 
 import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeImpl;
-import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeListener;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
 /**

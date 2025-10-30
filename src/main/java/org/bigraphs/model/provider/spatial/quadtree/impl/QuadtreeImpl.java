@@ -3,6 +3,7 @@ package org.bigraphs.model.provider.spatial.quadtree.impl;
 import lombok.Getter;
 import lombok.Setter;
 import org.bigraphs.model.provider.spatial.quadtree.Quadtree;
+import org.bigraphs.model.provider.spatial.quadtree.QuadtreeListener;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;

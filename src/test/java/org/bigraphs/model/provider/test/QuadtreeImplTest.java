@@ -2,7 +2,7 @@ package org.bigraphs.model.provider.test;
 
 import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeImpl;
 import org.bigraphs.model.provider.spatial.quadtree.JQuadtreeVisualizer;
-import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeListener;
+import org.bigraphs.model.provider.spatial.quadtree.QuadtreeListener;
 import org.bigraphs.model.provider.util.Point2DUtils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

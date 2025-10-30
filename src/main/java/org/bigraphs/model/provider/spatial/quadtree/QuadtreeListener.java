@@ -1,4 +1,4 @@
-package org.bigraphs.model.provider.spatial.quadtree.impl;
+package org.bigraphs.model.provider.spatial.quadtree;
 
 import java.awt.geom.Point2D;
 

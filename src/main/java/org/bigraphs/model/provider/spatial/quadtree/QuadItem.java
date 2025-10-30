@@ -1,39 +1,62 @@
 package org.bigraphs.model.provider.spatial.quadtree;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeImpl;
 
+import java.awt.*;
 import java.awt.geom.Point2D;
 
 /**
- * This interface represents a spatial element within a quadrant of a quadtree, which are
- * generally called "points".
- * Thus, they have a position attribute ({@link #getPosition()}).
- * Moreover, they can define a rectangular boundary, which can be used for additional collision checking procedures.
+ * A quad item with velocity and color.
  *
  * @author Dominik Grzelak
  */
-public interface QuadItem {
+public class QuadItem extends Point2D {
+    @Getter
+    @Setter
+    Point2D.Double position;
+    @Getter
+    @Setter
+    Point2D.Double size;
+    @Getter
+    @Setter
+    Point2D.Double velocity;
+    @Getter
+    @Setter
+    Color color;
 
-    /**
-     * Get the position of the quad item within a quad tree.
-     *
-     * @return the position of the quad item
-     */
-    Point2D.Double getPosition();
+    public QuadItem(Point2D.Double pos) {
+        this(pos, null);
+    }
 
-    // Dimension of an entry in a quadtree
+    public QuadItem(Point2D.Double pos, Color color) {
+        this(pos, null, null, color);
+    }
 
-    /**
-     * Get the width and height of a "point" in the quadtree.
-     *
-     * @return the dimension of the quad item
-     */
-    Point2D.Double getSize();
+    public QuadItem(Point2D.Double pos, Point2D.Double vel, Point2D.Double size, Color color) {
+        this.position = pos;
+        this.velocity = vel;
+        this.size = size;
+        this.color = color;
+    }
 
-    /**
-     * The rectangular boundary of a quad item computed using {@link #getSize()}.
-     *
-     * @return the boundary of the quad item
-     */
-    QuadtreeImpl.Boundary getBounds();
+    public QuadtreeImpl.Boundary getBounds() {
+        return new QuadtreeImpl.Boundary(position.getX(), position.getY(), size.x, size.y);
+    }
+
+    @Override
+    public double getX() {
+        return position.getX();
+    }
+
+    @Override
+    public double getY() {
+        return position.getY();
+    }
+
+    @Override
+    public void setLocation(double v, double v1) {
+        position.setLocation(v, v1);
+    }
 }
