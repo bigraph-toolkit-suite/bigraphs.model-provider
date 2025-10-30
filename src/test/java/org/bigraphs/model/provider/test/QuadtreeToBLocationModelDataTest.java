@@ -7,6 +7,7 @@ import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.model.provider.spatial.bigrid.BLocationModelDataFactory;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridProvider;
 import org.bigraphs.model.provider.spatial.quadtree.JQuadtreeVisualizer;
+import org.bigraphs.model.provider.spatial.quadtree.QuadItem;
 import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeImpl;
 import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeConvert;
 import org.junit.jupiter.api.Disabled;
@@ -68,7 +69,7 @@ public class QuadtreeToBLocationModelDataTest implements BigraphUnitTestSupport 
             int x = (int) (Math.random() * boundary.width);
             int y = (int) (Math.random() * boundary.height);
             Point2D.Double p = new Point2D.Double(x, y);
-            quadtree.insert(p);
+            quadtree.insert(QuadItem.create(p));
             Thread.sleep(50);
         }
 

@@ -8,11 +8,11 @@ import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeImpl;
  * @author Dominik Grzelak
  */
 public interface Quadtree {
-    QuadtreeImpl getNortheast();
+    Quadtree getNortheast();
 
-    QuadtreeImpl getNorthwest();
+    Quadtree getNorthwest();
 
-    QuadtreeImpl getSoutheast();
+    Quadtree getSoutheast();
 
-    QuadtreeImpl getSouthwest();
+    Quadtree getSouthwest();
 }

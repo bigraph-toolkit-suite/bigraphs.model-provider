@@ -15,6 +15,9 @@ import java.awt.geom.Point2D;
 public class QuadItem extends Point2D {
     @Getter
     @Setter
+    String id;
+    @Getter
+    @Setter
     Point2D.Double position;
     @Getter
     @Setter
@@ -26,15 +29,36 @@ public class QuadItem extends Point2D {
     @Setter
     Color color;
 
+    public static QuadItem create(String id, double x, double y) {
+        return create(id, new Point2D.Double(x, y));
+    }
+
+    public static QuadItem create(String id, Point2D pos) {
+        return new QuadItem(id, (Double) pos);
+    }
+
+    public static QuadItem create(double x, double y) {
+        return create(new Point2D.Double(x, y));
+    }
+
+    public static QuadItem create(Point2D pos) {
+        return new QuadItem((Double) pos);
+    }
+
+    public QuadItem(String id, Point2D.Double pos) {
+        this(id, pos, null, null, null);
+    }
+
     public QuadItem(Point2D.Double pos) {
         this(pos, null);
     }
 
     public QuadItem(Point2D.Double pos, Color color) {
-        this(pos, null, null, color);
+        this("", pos, null, null, color);
     }
 
-    public QuadItem(Point2D.Double pos, Point2D.Double vel, Point2D.Double size, Color color) {
+    public QuadItem(String id, Point2D.Double pos, Point2D.Double vel, Point2D.Double size, Color color) {
+        this.id = id;
         this.position = pos;
         this.velocity = vel;
         this.size = size;

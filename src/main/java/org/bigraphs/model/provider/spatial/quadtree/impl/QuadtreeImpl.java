@@ -2,6 +2,7 @@ package org.bigraphs.model.provider.spatial.quadtree.impl;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bigraphs.model.provider.spatial.quadtree.QuadItem;
 import org.bigraphs.model.provider.spatial.quadtree.Quadtree;
 import org.bigraphs.model.provider.spatial.quadtree.QuadtreeListener;
 
@@ -37,7 +38,7 @@ public class QuadtreeImpl implements Quadtree {
     @Getter
     private final Boundary boundary;
     @Getter
-    private final List<Point2D> points;
+    private final List<QuadItem> points;
     @Getter
     private boolean divided;
     @Getter
@@ -104,20 +105,20 @@ public class QuadtreeImpl implements Quadtree {
      *
      * @param point the last point inserted
      */
-    private void informListeners_added(Point2D point) {
+    private void informListeners_added(QuadItem point) {
         // System.out.println("Inserted point " + point + " at depth " + depth);
         for (QuadtreeListener listener : listeners) {
             listener.onPointInserted(point);
         }
     }
 
-    private void informListeners_rejected(Point2D point) {
+    private void informListeners_rejected(QuadItem point) {
         for (QuadtreeListener listener : listeners) {
             listener.onPointRejected(point);
         }
     }
 
-    private void informListeners_delete(Point2D point) {
+    private void informListeners_delete(QuadItem point) {
         for (QuadtreeListener listener : listeners) {
             listener.onPointDeleted(point);
         }
@@ -128,7 +129,7 @@ public class QuadtreeImpl implements Quadtree {
      *
      * @return {@code true} if successfully inserted, otherwise {@code false}
      */
-    public boolean insert(Point2D point) {
+    public boolean insert(QuadItem point) {
         return this.insert(point, false);
     }
 
@@ -137,7 +138,7 @@ public class QuadtreeImpl implements Quadtree {
      *
      * @return {@code true} if successfully inserted, otherwise {@code false}
      */
-    protected boolean insert(Point2D point, boolean isDivision) {
+    protected boolean insert(QuadItem point, boolean isDivision) {
         if (!boundary.contains(point)) {
             return false; // Ignore points outside the boundary
         }
@@ -217,7 +218,7 @@ public class QuadtreeImpl implements Quadtree {
      * If the points of the quadtree are changed, this allows the quadtree to lay out the quads again.
      */
     public void cleanup() {
-        List<Point2D> point2DS = queryRange(boundary);
+        List<QuadItem> point2DS = queryRange(boundary);
         points.clear();
         northeast = null;
         northwest = null;
@@ -258,7 +259,7 @@ public class QuadtreeImpl implements Quadtree {
         divided = true;
 
         // Reinsert all points into the child nodes
-        for (Point2D point : points) {
+        for (QuadItem point : points) {
             if (!northeast.insert(point, true) &&
                     !northwest.insert(point, true) &&
                     !southeast.insert(point, true) &&
@@ -293,7 +294,7 @@ public class QuadtreeImpl implements Quadtree {
 
         // After trying all sub-nodes, check if any node was able to remove the point
         if (deleted) {
-            informListeners_delete(point);
+            informListeners_delete((QuadItem) point);
             return true;
         }
 
@@ -306,14 +307,14 @@ public class QuadtreeImpl implements Quadtree {
      * @param range the search boundary
      * @return a list of points within the given boundary
      */
-    public List<Point2D> queryRange(Boundary range) {
-        List<Point2D> found = new ArrayList<>();
+    public List<QuadItem> queryRange(Boundary range) {
+        List<QuadItem> found = new ArrayList<>();
 
         if (!boundary.intersects(range)) {
             return found; // Return an empty list if range doesn't intersect boundary
         }
 
-        for (Point2D point : points) {
+        for (QuadItem point : points) {
             if (range.contains(point)) {
                 found.add(point);
             }

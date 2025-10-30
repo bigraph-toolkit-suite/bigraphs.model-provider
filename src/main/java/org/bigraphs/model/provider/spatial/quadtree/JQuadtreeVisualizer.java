@@ -93,17 +93,17 @@ public class JQuadtreeVisualizer extends JPanel implements QuadtreeListener, Key
     }
 
     @Override
-    public void onPointInserted(Point2D point) {
+    public void onPointInserted(QuadItem point) {
         repaint(); // Repaint the panel whenever a point is inserted
     }
 
     @Override
-    public void onPointRejected(Point2D point) {
+    public void onPointRejected(QuadItem point) {
         repaint();
     }
 
     @Override
-    public void onPointDeleted(Point2D point) {
+    public void onPointDeleted(QuadItem point) {
         repaint();
     }
 

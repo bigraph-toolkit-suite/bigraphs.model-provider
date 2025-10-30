@@ -1,5 +1,6 @@
 package org.bigraphs.model.provider.test;
 
+import org.bigraphs.model.provider.spatial.quadtree.QuadItem;
 import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeImpl;
 import org.bigraphs.model.provider.spatial.quadtree.JQuadtreeVisualizer;
 import org.bigraphs.model.provider.spatial.quadtree.QuadtreeListener;
@@ -39,36 +40,27 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
         QuadtreeImpl quadtree = new QuadtreeImpl(boundary, maxPointsPerLeaf, maxTreeDepth);
         quadtree.addListener(new QuadtreeListener() {
             @Override
-            public void onPointRejected(Point2D p) {
+            public void onPointRejected(QuadItem p) {
                 System.out.println("Collision detected for point: " + p);
             }
         });
-        List<Point2D> data = new ArrayList<>();
-        data.add(new Point2D.Double(4, 0.2));
-        data.add(new Point2D.Double(4, -0.12));
-        data.add(new Point2D.Double(4, -0.1));
-        data.add(new Point2D.Double(4, 0.4));
+        List<QuadItem> data = new ArrayList<>();
+        data.add(QuadItem.create(4, 0.2));
+        data.add(QuadItem.create(4, -0.12));
+        data.add(QuadItem.create(4, -0.1));
+        data.add(QuadItem.create(4, 0.4));
         data.forEach(p -> {
             quadtree.insert(p);
         });
 
         // Define range for query and print points found in range
         QuadtreeImpl.Boundary range = new QuadtreeImpl.Boundary(0, -0.3, 4.1, 1);
-        List<Point2D> pointsInRange = quadtree.queryRange(range);
+        List<QuadItem> pointsInRange = quadtree.queryRange(range);
         System.out.println("Points in range " + range + ":");
         assert pointsInRange.size() == 3;
         for (Point2D point : pointsInRange) {
             System.out.println(point);
         }
-
-//        JFrame frame = new JFrame("Agent Position with Jitter (Simulation)");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.add(new JQuadtreeVisualizer(quadtree));
-//        frame.pack();
-//        frame.setLocationRelativeTo(null);
-//        frame.setVisible(true);
-
-//        Thread.sleep(60 * 5 * 1000);
     }
 
     /**
@@ -89,12 +81,12 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
         QuadtreeImpl.Boundary boundary = new QuadtreeImpl.Boundary(0, 0, areaSizeW, areaSizeH);
 //        QuadtreeImpl.Boundary boundary = new QuadtreeImpl.Boundary(-5, -5, areaSizeW, areaSizeH);
         int maxPointsPerLeaf = 1;  // Configurable max points
-        int maxTreeDepth = QuadtreeImpl.getMaxTreeDepthFrom(boundary, marginAgent);;      // Configurable max depth
+        int maxTreeDepth = QuadtreeImpl.getMaxTreeDepthFrom(boundary, marginAgent); // Configurable max depth
 
         QuadtreeImpl quadtree = new QuadtreeImpl(boundary, maxPointsPerLeaf, maxTreeDepth);
         quadtree.addListener(new QuadtreeListener() {
             @Override
-            public void onPointRejected(Point2D point) {
+            public void onPointRejected(QuadItem point) {
                 System.out.println("Collision detected for point = (" + point.getX() + ", " + point.getY() + ")");
             }
         });
@@ -110,7 +102,7 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
         List<Point2D> pointsOnCircleBase = Point2DUtils.pointCircle(new Point2D.Double(200, 200), 50, 10);
         pointsOnCircleBase.forEach(p -> {
             try {
-                quadtree.insert(p);
+                quadtree.insert(QuadItem.create(p));
                 Thread.sleep(50);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -119,7 +111,7 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
         List<Point2D> pointsOnCircleGripper = Point2DUtils.pointCircle(new Point2D.Double(200, 80), 20, 15);
         pointsOnCircleGripper.forEach(p -> {
             try {
-                quadtree.insert(p);
+                quadtree.insert(QuadItem.create(p));
                 Thread.sleep(50);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -135,7 +127,7 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
             List<Point2D> pointsJittered = Point2DUtils.jitterPoints(pointsQueried, jitterAmount);
             for (int j = 0; j < pointsQueried.size(); j++) {
                 quadtree.delete(pointsQueried.get(j));
-                quadtree.insert(pointsJittered.get(j));
+                quadtree.insert(QuadItem.create(pointsJittered.get(j)));
             }
             Thread.sleep(timeSleepBetweenCycles);
             quadtree.cleanup();
@@ -172,8 +164,9 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
         QuadtreeImpl quadtree = new QuadtreeImpl(boundary, maxPointsPerLeaf, maxTreeDepth);
         quadtree.addListener(new QuadtreeListener() {
             @Override
-            public void onPointRejected(Point2D p) {
-                System.out.println("Collision detected for point: " + p);
+            public void onPointRejected(QuadItem p) {
+                System.out.println("Collision detected for point: ");
+                System.out.println("\tPos: " + p.getPosition());
             }
         });
         // Create the visualization window
@@ -190,7 +183,7 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
             int x = (int) (Math.random() * boundary.width);
             int y = (int) (Math.random() * boundary.height);
             Point2D.Double p = new Point2D.Double(x, y);
-            quadtree.insert(p);
+            quadtree.insert(QuadItem.create(p));
             Thread.sleep(50);
         }
 
@@ -204,7 +197,7 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
             List<Point2D> pointsJittered = Point2DUtils.jitterPoints(pointsQueried, jitterAmount);
             for (int j = 0; j < pointsQueried.size(); j++) {
                 quadtree.delete(pointsQueried.get(j));
-                quadtree.insert(pointsJittered.get(j));
+                quadtree.insert(QuadItem.create(pointsJittered.get(j)));
             }
             Thread.sleep(timeSleepBetweenCycles);
             quadtree.cleanup();
@@ -239,8 +232,9 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
         QuadtreeImpl quadtree = new QuadtreeImpl(boundary, maxPointsPerLeaf, maxTreeDepth);
         quadtree.addListener(new QuadtreeListener() {
             @Override
-            public void onPointRejected(Point2D p) {
-                System.out.println("Collision detected for point: " + p);
+            public void onPointRejected(QuadItem p) {
+                System.out.println("Collision detected for point: ");
+                System.out.println("\tPos: " + p.getPosition());
             }
         });
         // Create the visualization window
@@ -260,20 +254,20 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
             int x = (int) (Math.random() * boundary.width);
             int y = (int) (Math.random() * boundary.height);
             p = new Point2D.Double(x, y);
-            quadtree.insert(p);
+            quadtree.insert(QuadItem.create(p));
             Thread.sleep(50);
 
         }
 
         System.out.println("Deleting now points");
-        List<Point2D> pointsQueried = quadtree.queryRange(boundary);
+        List<Point2D> pointsQueried = new LinkedList<>(quadtree.queryRange(boundary));
         System.out.println(Arrays.toString(pointsQueried.toArray()));
         Thread.sleep(1000);
         pointsQueried.forEach(point -> {
             try {
                 Thread.sleep(250);
                 boolean delete = quadtree.delete(point);
-                System.out.println("deleted? " + delete);
+                System.out.println("Point [" + point.getX() + ", " +point.getY() + "] deleted = " + delete);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -293,17 +287,17 @@ public class QuadtreeImplTest implements BigraphUnitTestSupport {
         QuadtreeImpl quadtree = new QuadtreeImpl(boundary, maxPointsPerLeaf, maxTreeDepth);
 
         // Insert points into the quadtree
-        quadtree.insert(new Point2D.Double(10, 10));
-        quadtree.insert(new Point2D.Double(15, 15));
-        quadtree.insert(new Point2D.Double(30, 30));
+        quadtree.insert(QuadItem.create(10, 10));
+        quadtree.insert(QuadItem.create(15, 15));
+        quadtree.insert(QuadItem.create(30, 30));
 //        quadtree.insert(new Point2D.Double(35, 35));
-        quadtree.insert(new Point2D.Double(38, 38));
+        quadtree.insert(QuadItem.create(38, 38));
 //        quadtree.insert(new Point2D.Double(45, 45));
-        quadtree.insert(new Point2D.Double(50, 51));
+        quadtree.insert(QuadItem.create(50, 51));
 
         // Define range for query
         QuadtreeImpl.Boundary range = new QuadtreeImpl.Boundary(30, 30, 60, 60);
-        List<Point2D> pointsInRange = quadtree.queryRange(range);
+        List<Point2D> pointsInRange = new LinkedList<>(quadtree.queryRange(range));
 
         // Print points found in range
         System.out.println("Points in range " + range + ":");
