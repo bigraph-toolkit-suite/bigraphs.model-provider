@@ -6,7 +6,7 @@
 
     <groupId>org.bigraphs.model.provider</groupId>
     <artifactId>model-provider-core</artifactId>
-    <version>1.1.6</version>
+    <version>1.1.7-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Bigraph Model Provider (Core)</name>
@@ -62,13 +62,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Versions -->
-        <bigraph.version>2.2.0</bigraph.version>
-        <guava.version>33.0.0-jre</guava.version>
+        <bigraph.version>2.3.0</bigraph.version>
+        <guava.version>33.5.0-jre</guava.version>
         <jgrapht.version>1.5.2</jgrapht.version>
         <graphstream.version>2.0</graphstream.version>
         <lombok.version>1.18.30</lombok.version>
         <junit.version>5.10.3</junit.version>
-        <jackson.version>2.17.1</jackson.version>
+        <jackson.version>2.20.0</jackson.version>
         <eclipse.core.runtime>3.31.0</eclipse.core.runtime>
     </properties>
 
