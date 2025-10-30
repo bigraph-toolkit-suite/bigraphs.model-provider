@@ -7,12 +7,12 @@ import org.bigraphs.framework.visualization.BigraphGraphvizExporter;
 import org.bigraphs.framework.visualization.SwingGraphStreamer;
 import org.graphstream.ui.view.Viewer;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public interface BigraphUnitTestSupport {
 
@@ -22,6 +22,13 @@ public interface BigraphUnitTestSupport {
                 .renderRoots(renderRoots);
         graphStreamer.prepareSystemEnvironment();
         Viewer graphViewer = graphStreamer.getGraphViewer();
+
+//        InputStream styleStream = BigraphUnitTestSupport.class.getResourceAsStream("/light-style.css");
+        InputStream styleStream = SwingGraphStreamer.class.getResourceAsStream("/graphStreamStyleHighlight.css");
+        String style = new BufferedReader(new InputStreamReader(styleStream))
+                .lines()
+                .collect(Collectors.joining("\n"));
+        graphStreamer.getGraph().setAttribute("ui.stylesheet", style);
         return graphViewer;
     }
 

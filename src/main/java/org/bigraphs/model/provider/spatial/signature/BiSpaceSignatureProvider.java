@@ -14,6 +14,10 @@ import static org.bigraphs.framework.core.factory.BigraphFactory.pureSignatureBu
  */
 public class BiSpaceSignatureProvider extends BAbstractSignatureProvider<DynamicSignature> {
 
+    public static final String LOCALE_TYPE = "Locale";
+    public static final String ROUTE_TYPE = "Route";
+    public static final String OCCUPIED_TYPE = "OccupiedBy";
+
     private static BiSpaceSignatureProvider instance;
     private static final Object lock = new Object();
 
@@ -35,12 +39,9 @@ public class BiSpaceSignatureProvider extends BAbstractSignatureProvider<Dynamic
     public DynamicSignature getSignature() {
         DynamicSignatureBuilder defaultBuilder = pureSignatureBuilder();
         defaultBuilder
-                .add("VarSpace", 0)
-                .add("True", 0)
-                .add("False", 0)
-                .add("Error", 0)
-                .add("Locale", 1)
-                .add("Route", 1)
+                .add(LOCALE_TYPE, 1)
+                .add(ROUTE_TYPE, 1)
+                .add(OCCUPIED_TYPE, 0)
         ;
         return defaultBuilder.create();
     }
