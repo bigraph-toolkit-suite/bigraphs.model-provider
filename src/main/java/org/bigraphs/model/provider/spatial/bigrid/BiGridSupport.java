@@ -10,7 +10,7 @@ import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
 import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
-import org.bigraphs.model.provider.util.MPMathUtils;
+import org.bigraphs.model.provider.util.Point2DUtils;
 
 import java.awt.geom.Point2D;
 import java.util.*;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  *
  * @author Dominik Grzelak
  */
-public class BiGridSupport {
+public abstract class BiGridSupport {
 
     /**
      * Bounding Box of agent is also considered
@@ -38,7 +38,7 @@ public class BiGridSupport {
     public static boolean agentIsCloseAtPoint(BLocationModelData.Agent agent, Point2D.Float pointToCheck) {
         Point2D.Float pointAgent = (agent.getCenter());
         float agentBoundingBoxDiagonal = (float) (Math.sqrt(2) * agent.getWidth());
-        return MPMathUtils.coordinatesAreClose(pointToCheck, pointAgent, agentBoundingBoxDiagonal);
+        return Point2DUtils.coordinatesAreClose(pointToCheck, pointAgent, agentBoundingBoxDiagonal);
     }
 
     public static String formatParamControl(Point2D.Float coordinate) {
@@ -110,7 +110,7 @@ public class BiGridSupport {
      */
     public static BLocationModelData.Locale getConnectedLocale(Point2D.Float roadPosition, List<BLocationModelData.Locale> locales) {
         for (BLocationModelData.Locale each : locales) {
-            if (MPMathUtils.coordinatesAreClose(roadPosition, each.getCenter(), 0)) {
+            if (Point2DUtils.coordinatesAreClose(roadPosition, each.getCenter(), 0)) {
                 return each;
             }
         }
