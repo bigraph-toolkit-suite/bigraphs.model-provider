@@ -139,6 +139,7 @@ public class BLocationModelData {
         float width;
         float depth;
         float height;
+        public String type;
 
         @Override
         public int compareTo(Agent otherAgent) {
