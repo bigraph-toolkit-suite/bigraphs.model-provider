@@ -26,19 +26,35 @@ import java.util.stream.Collectors;
 public abstract class BiGridSupport {
 
     /**
-     * Bounding Box of agent is also considered
-     * Whether the agent is at/near a point (plus BB as margin) wrt the distance threshold.
+     * Determines whether a given agent is within a specified distance of a point.
      * <p>
-     * E.g., point for a locale is the center coordinate.
+     * The check is based on the Euclidean distance between the agent's center and
+     * the target point.
      *
-     * @param agent        the agent to check
-     * @param pointToCheck the point to check against
-     * @return true if agent is in locale
+     * @param agent         the agent whose position is evaluated
+     * @param pointToCheck  the spatial point to compare against
+     * @param threshold     the maximum allowed distance for proximity
+     * @return {@code true} if the agent’s center is within {@code threshold} distance of {@code pointToCheck}; {@code false} otherwise
+     */
+    public static boolean agentIsCloseAtPoint(BLocationModelData.Agent agent, Point2D.Float pointToCheck, float threshold) {
+        Point2D.Float pointAgent = (agent.getCenter());
+        return Point2DUtils.coordinatesAreClose(pointToCheck, pointAgent, threshold);
+    }
+
+    /**
+     * Determines whether an agent is spatially near a given point.
+     * <p>
+     * The threshold is derived from the diagonal of the agent’s bounding
+     * box (√2 x width).
+     *
+     * @param agent         the agent whose proximity to the point is evaluated
+     * @param pointToCheck  the spatial point to compare against
+     * @return {@code true} if any part of the agent (including its bounding box) lies within
+     *         the computed threshold distance from {@code pointToCheck}; {@code false} otherwise
      */
     public static boolean agentIsCloseAtPoint(BLocationModelData.Agent agent, Point2D.Float pointToCheck) {
-        Point2D.Float pointAgent = (agent.getCenter());
         float agentBoundingBoxDiagonal = (float) (Math.sqrt(2) * agent.getWidth());
-        return Point2DUtils.coordinatesAreClose(pointToCheck, pointAgent, agentBoundingBoxDiagonal);
+        return agentIsCloseAtPoint(agent, pointToCheck, agentBoundingBoxDiagonal);
     }
 
     public static String formatParamControl(Point2D.Float coordinate) {
