@@ -10,9 +10,10 @@ import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 import static org.bigraphs.framework.core.factory.BigraphFactory.pureBuilder;
+import static org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider.LOCALE_TYPE;
+import static org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider.ROUTE_TYPE;
 
 
 /**
@@ -68,7 +69,7 @@ public class BiGridProvider extends BAbstractBigraphProvider<DynamicSignature, P
             getLocationModelData().getLocaleNameToCoordinates().get(each.getName()).add(each.getCenter());
         }
 
-//        Supplier<String> nameSupplier = createNameSupplier("y");
+
         PureBigraphBuilder<DynamicSignature> builder = pureBuilder(getSignature());
         Map<String, PureBigraphBuilder<DynamicSignature>.Hierarchy> localeNameToBigraphMap = new LinkedHashMap<>();
         Map<String, String> localeNameToOuternameMap = new LinkedHashMap<>();
@@ -82,8 +83,10 @@ public class BiGridProvider extends BAbstractBigraphProvider<DynamicSignature, P
         Collections.sort(locales);
         Collections.sort(routes);
 
-//        System.out.format("Total Locales found: %d\n", locales.size());
-//        System.out.format("Total Roads found: %d\n", routes.size());
+        if (LOG_DEBUG) {
+            System.out.format("Total Locales found: %d\n", locales.size());
+            System.out.format("Total Roads found: %d\n", routes.size());
+        }
 
         //TODO assume specific/random order?
         // Currently we build the grid from top to bottom, from left to right
@@ -91,15 +94,14 @@ public class BiGridProvider extends BAbstractBigraphProvider<DynamicSignature, P
         for (BLocationModelData.Locale each : locales) {
             assert each.getName() != null;
             if (makeWorldModelGround) {
-                localeNameToBigraphMap.put(each.getName(), builder.hierarchy("Locale").top());
+                localeNameToBigraphMap.put(each.getName(), builder.hierarchy(LOCALE_TYPE).top());
             } else {
-                localeNameToBigraphMap.put(each.getName(), builder.hierarchy("Locale").site().top());
+                localeNameToBigraphMap.put(each.getName(), builder.hierarchy(LOCALE_TYPE).site().top());
             }
             String nodeId = localeNameToBigraphMap.get(each.getName()).getLastCreatedNode().getName();
             assert nodeId.equalsIgnoreCase(each.getName());
             lmpd.getBNodeIdToExternalLocaleName().put(nodeId, each.getName());
 
-//            localeNameToOuternameMap.put(nodeId, nameSupplier.get());
             String coordLabel = BiGridSupport.formatParamControl(each.getCenter());
             localeNameToOuternameMap.put(nodeId, coordLabel);
 
@@ -109,12 +111,6 @@ public class BiGridProvider extends BAbstractBigraphProvider<DynamicSignature, P
             // In this state the locale site index == root index
             mLocale2Index.put(each.getName(), sIx);
             sIx++;
-
-//            // Update the coordinate set of each locale: Fill default coordinates
-//            // Center of each locale is default coordinate
-//            // Will be used by CFMAPFWorldModelProvider
-//            getLocationModelData().getLocaleNameToCoordinates().putIfAbsent(each.getName(), new ArrayList<>());
-//            getLocationModelData().getLocaleNameToCoordinates().get(each.getName()).add(each.getCenter());
         }
         // store original mapping for later use
         // Note that the site indexes are not necessarily present if agents occupy the space.
@@ -137,16 +133,16 @@ public class BiGridProvider extends BAbstractBigraphProvider<DynamicSignature, P
                 String y2 = localeNameToOuternameMap.get(connectedLocaleEnd.getName());
 
                 if (routeDirection == RouteDirection.BIDIRECTIONAL) { // from start to end and vice versa
-                    localeNameToBigraphMap.get(connectedLocaleStart.getName()).child("Route").linkOuter(y2).top();
-                    localeNameToBigraphMap.get(connectedLocaleEnd.getName()).child("Route").linkOuter(y).top();
+                    localeNameToBigraphMap.get(connectedLocaleStart.getName()).child(ROUTE_TYPE).linkOuter(y2).top();
+                    localeNameToBigraphMap.get(connectedLocaleEnd.getName()).child(ROUTE_TYPE).linkOuter(y).top();
                 }
                 if (routeDirection == RouteDirection.UNIDIRECTIONAL_FORWARD) { // from start to end only
-                    BiGridSupport.connectToOuterName(connectedLocaleStart.getName(), localeNameToBigraphMap, y, localeNameToOuternameMap).child("Route").linkOuter(y2).top();
+                    BiGridSupport.connectToOuterName(connectedLocaleStart.getName(), localeNameToBigraphMap, y, localeNameToOuternameMap).child(ROUTE_TYPE).linkOuter(y2).top();
                     BiGridSupport.connectToOuterName(connectedLocaleEnd.getName(), localeNameToBigraphMap, y2, localeNameToOuternameMap);
                 }
                 if (routeDirection == RouteDirection.UNIDIRECTIONAL_BACKWARD) { // from start to end only
                     BiGridSupport.connectToOuterName(connectedLocaleStart.getName(), localeNameToBigraphMap, y, localeNameToOuternameMap);
-                    BiGridSupport.connectToOuterName(connectedLocaleEnd.getName(), localeNameToBigraphMap, y2, localeNameToOuternameMap).child("Route").linkOuter(y).top();
+                    BiGridSupport.connectToOuterName(connectedLocaleEnd.getName(), localeNameToBigraphMap, y2, localeNameToOuternameMap).child(ROUTE_TYPE).linkOuter(y).top();
                 }
             }
         }
