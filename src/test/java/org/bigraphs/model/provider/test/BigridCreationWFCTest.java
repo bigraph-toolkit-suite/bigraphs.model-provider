@@ -15,6 +15,7 @@ import org.bigraphs.model.provider.spatial.bigrid.BiGridElementFactory;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridConnectivityCheckerDFS;
 import org.bigraphs.model.provider.spatial.bigrid.World;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridConnectivityChecker;
+import org.bigraphs.testing.BigraphUnitTestSupport;
 import org.graphstream.ui.view.Viewer;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -39,16 +40,16 @@ public class BigridCreationWFCTest implements BigraphUnitTestSupport {
         BiGridElementFactory factory = BiGridElementFactory.create();
 
         float stepSize = 0.1f;
-        PureBigraph bigrid0 = factory.crossingFour(0, 0*stepSize, stepSize);
-        PureBigraph bigrid1 = factory.crossingFour(0, 1*stepSize, stepSize);
-        PureBigraph bigrid2 = factory.crossingFour(0, 2*stepSize, stepSize);
-        PureBigraph bigrid3 = factory.crossingFour(0, 3*stepSize, stepSize);
+        PureBigraph bigrid0 = factory.crossingFour(0, 0 * stepSize, stepSize);
+        PureBigraph bigrid1 = factory.crossingFour(0, 1 * stepSize, stepSize);
+        PureBigraph bigrid2 = factory.crossingFour(0, 2 * stepSize, stepSize);
+        PureBigraph bigrid3 = factory.crossingFour(0, 3 * stepSize, stepSize);
 
         PureBigraph bigrid = //bigrid0;
                 ops(bigrid0).parallelProduct(bigrid1)
-                .parallelProduct(bigrid2)
-                .parallelProduct(bigrid3)
-                .getOuterBigraph();
+                        .parallelProduct(bigrid2)
+                        .parallelProduct(bigrid3)
+                        .getOuterBigraph();
 
         SwingGraphStreamer graphStreamer = new SwingGraphStreamer(bigrid)
                 .renderSites(true)
@@ -140,7 +141,7 @@ public class BigridCreationWFCTest implements BigraphUnitTestSupport {
             System.out.println("Is Guarding\t: " + bigrid.isGuarding());
             System.out.println("Is Lean\t: " + bigrid.isLean());
 
-            GUI(bigrid,false,false);
+            GUI(bigrid, false, false);
             while (true)
                 Thread.sleep(10000);
         }

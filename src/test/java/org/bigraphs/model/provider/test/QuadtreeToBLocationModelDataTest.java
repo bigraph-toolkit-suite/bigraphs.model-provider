@@ -10,6 +10,7 @@ import org.bigraphs.model.provider.spatial.quadtree.JQuadtreeVisualizer;
 import org.bigraphs.model.provider.spatial.quadtree.QuadItem;
 import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeImpl;
 import org.bigraphs.model.provider.spatial.quadtree.impl.QuadtreeConvert;
+import org.bigraphs.testing.BigraphUnitTestSupport;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testng.annotations.BeforeMethod;

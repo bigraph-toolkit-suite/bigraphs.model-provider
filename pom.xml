@@ -6,7 +6,7 @@
 
     <groupId>org.bigraphs.model.provider</groupId>
     <artifactId>model-provider-core</artifactId>
-    <version>1.1.10</version>
+    <version>1.1.11</version>
     <packaging>jar</packaging>
 
     <name>Bigraph Model Provider (Core)</name>
@@ -62,14 +62,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Versions -->
-        <bigraph.version>2.3.0</bigraph.version>
+        <bigraph.version>2.3.1</bigraph.version>
+        <bigraph.testing.version>0.1.0</bigraph.testing.version>
         <guava.version>33.5.0-jre</guava.version>
         <jgrapht.version>1.5.2</jgrapht.version>
         <graphstream.version>2.0</graphstream.version>
         <lombok.version>1.18.30</lombok.version>
         <junit.version>5.10.3</junit.version>
         <jackson.version>2.20.0</jackson.version>
-        <eclipse.core.runtime>3.31.0</eclipse.core.runtime>
+        <eclipse.core.runtime>3.34.0</eclipse.core.runtime>
     </properties>
 
     <dependencies>
@@ -140,12 +141,12 @@
         <!--            <artifactId>slf4j-api</artifactId>-->
         <!--            <version>2.0.12</version>-->
         <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.slf4j</groupId>-->
-        <!--            <artifactId>slf4j-nop</artifactId>-->
-        <!--            <version>2.0.13</version>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>2.0.7</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Deployment -->
         <dependency>
             <groupId>org.sonatype.central</groupId>
@@ -157,6 +158,12 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bigraphs.testing</groupId>
+            <artifactId>bigraphs-testing</artifactId>
+            <version>${bigraph.testing.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -4,30 +4,20 @@ import org.bigraphs.framework.core.BigraphFileModelManagement;
 import org.bigraphs.framework.core.exceptions.IncompatibleSignatureException;
 import org.bigraphs.framework.core.exceptions.InvalidConnectionException;
 import org.bigraphs.framework.core.exceptions.operations.IncompatibleInterfaceException;
-import org.bigraphs.framework.core.factory.BigraphFactory;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.framework.visualization.SwingGraphStreamer;
 import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.model.provider.spatial.bigrid.*;
 import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-import org.graphstream.ui.graphicGraph.GraphicElement;
-import org.graphstream.ui.graphicGraph.GraphicGraph;
-import org.graphstream.ui.swing_viewer.util.DefaultMouseManager;
-import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
-import org.graphstream.ui.view.util.InteractiveElement;
-import org.graphstream.ui.view.util.MouseManager;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.bigraphs.testing.BigraphUnitTestSupport;
 
-import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.bigraphs.framework.core.factory.BigraphFactory.ops;
 import static org.bigraphs.framework.core.factory.BigraphFactory.pureBuilder;
@@ -82,7 +72,7 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
         BiGridProvider provider = new BiGridProvider(lmpd)
                 .setRouteDirection(BiGridProvider.RouteDirection.BIDIRECTIONAL);
         PureBigraph bigrid = provider.getBigraph();
-        eb(bigrid, String.format("bigrid-%dx%d", m, n), DUMP_PATH);
+        toPNG(bigrid, String.format("bigrid-%dx%d", m, n), DUMP_PATH);
         BigraphFileModelManagement.Store.exportAsInstanceModel(bigrid, new FileOutputStream(String.format("bigrid-%dx%d.xmi", m, n)));
         print(bigrid);
         printMetaModel(bigrid);
@@ -111,7 +101,7 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
     @Test
     public void test_convexShape_PointList() throws InvalidConnectionException, IOException, InterruptedException {
-        float stepSize = 0.45f;
+        float stepSize = 0.5f;
 //        Point2D.Float originPoint = new Point2D.Float(0, 0);
 //        List<Point2D.Float> convexPoints = new LinkedList<>();
 //        convexPoints.add(originPoint);
@@ -120,10 +110,10 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 //        convexPoints.add(new Point2D.Float(1.5f, -2.8f));
 
         List<Point2D.Float> convexPoints = new LinkedList<>();
-        convexPoints.add(new Point2D.Float(0f, 0f));
-        convexPoints.add(new Point2D.Float(-1.24f, 0.58f));
-        convexPoints.add(new Point2D.Float(2.86f, 2.93f));
-        convexPoints.add(new Point2D.Float(3.08f, 0f));
+//        convexPoints.add(new Point2D.Float(0f, 0f));
+//        convexPoints.add(new Point2D.Float(-1.24f, 0.58f));
+//        convexPoints.add(new Point2D.Float(2.86f, 2.93f));
+//        convexPoints.add(new Point2D.Float(3.08f, 0f));
 
 //        List<Point2D.Float> convexPoints = new LinkedList<>();
 //        convexPoints.add(new Point2D.Float(0f, 0f));
@@ -131,9 +121,15 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 //        convexPoints.add(new Point2D.Float(3.72f, -0.19f));
 //        convexPoints.add(new Point2D.Float(0.88f, -1.57f));
 
+        convexPoints.add(new Point2D.Float(0f, 0f));
+        convexPoints.add(new Point2D.Float(0f, 1.5f));
+        convexPoints.add(new Point2D.Float(4.5f, 0.25f));
+        convexPoints.add(new Point2D.Float(1.75f, -3f));
+
         PureBigraph result = ConvexShapeBuilder.generateAsSingle(convexPoints, stepSize, BiGridElementFactory.create());
         BigraphFileModelManagement.Store.exportAsInstanceModel(result, System.out);
         BigraphFileModelManagement.Store.exportAsInstanceModel(result, new FileOutputStream("test.xmi"));
+        BigraphFileModelManagement.Store.exportAsMetaModel(result, new FileOutputStream("test.ecore"));
         GUI(result, true, false);
         while (true)
             Thread.sleep(10000);

@@ -8,8 +8,8 @@ import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.visualization.SwingGraphStreamer;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridElementFactory;
 import org.bigraphs.model.provider.spatial.bigrid.ConvexShapeBuilder;
-import org.bigraphs.model.provider.test.BigraphUnitTestSupport;
 import org.bigraphs.model.provider.test.BigridCreationTest;
+import org.bigraphs.testing.BigraphUnitTestSupport;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.swing_viewer.util.DefaultMouseManager;
@@ -105,13 +105,13 @@ public class NavigationPathCreator implements BigraphUnitTestSupport {
                             .filter(BigraphEntityType::isNode)
                             .map(x -> (BigraphEntity.NodeEntity<?>) x)
                             .filter(x -> x.getName().equals(elementId)).findFirst();
-                    if(first.isPresent()) {
+                    if (first.isPresent()) {
                         BigraphEntity.NodeEntity<?> nodeEntity = first.get();
                         System.out.println("Node: " + nodeEntity.getName());
                         System.out.println("Root Index: " + bigraph.getTopLevelRoot(nodeEntity));
-                        if(nodeEntity.getControl().equals(bigraph.getSignature().getControlByName("Locale"))) {
+                        if (nodeEntity.getControl().equals(bigraph.getSignature().getControlByName("Locale"))) {
                             System.out.println("is LOCALE!");
-                            if(remove) {
+                            if (remove) {
                                 node1.setAttribute("ui.class", "control");
                                 selectedNodes.stream().filter(x -> x.nodeId().equals(elementId)).findFirst().ifPresent(selectedNodes::remove);
                             } else {
