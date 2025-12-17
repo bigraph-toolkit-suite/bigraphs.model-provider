@@ -1,3 +1,7 @@
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/org.bigraphs.model.provider/model-provider-core)](https://central.sonatype.com/artifact/org.bigraphs.model.provider/model-provider-core)
+
+
 # Bigraph Model Provider (Library)
 
 > **Latest Version:** 1.2.0
