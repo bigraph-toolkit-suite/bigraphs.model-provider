@@ -8,7 +8,6 @@ import org.bigraphs.model.provider.util.Point2DUtils;
 import org.bigraphs.testing.BigraphUnitTestSupport;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.testng.annotations.BeforeMethod;
 
 import javax.swing.*;
 import java.awt.geom.Point2D;
@@ -23,14 +22,6 @@ import java.util.*;
  */
 @Disabled
 public class QuadtreeImplTest implements BigraphUnitTestSupport {
-
-    /**
-     * Allow the Swing GUI to be drawn on the screen.
-     */
-    @BeforeMethod
-    public void setUp() {
-        System.setProperty("java.awt.headless", "false");
-    }
 
     @Test
     void test_simple_quadtree() throws InterruptedException {

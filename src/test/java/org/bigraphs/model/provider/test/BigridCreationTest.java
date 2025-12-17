@@ -11,9 +11,9 @@ import org.bigraphs.model.provider.base.BLocationModelData;
 import org.bigraphs.model.provider.spatial.bigrid.*;
 import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
 import org.graphstream.ui.view.Viewer;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.bigraphs.testing.BigraphUnitTestSupport;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.awt.geom.Point2D;
 import java.io.*;
@@ -22,13 +22,38 @@ import java.util.*;
 import static org.bigraphs.framework.core.factory.BigraphFactory.ops;
 import static org.bigraphs.framework.core.factory.BigraphFactory.pureBuilder;
 
+/**
+ * Tests that show how to create bigrids in various ways using generators or factories.
+ *
+ * @author Dominik Grzelak
+ */
+@Disabled
 public class BigridCreationTest implements BigraphUnitTestSupport {
     static final String DUMP_PATH = "src/test/resources/dump/bigrid/";
 
-    @BeforeMethod
-    public void setUp() {
-        System.setProperty("java.awt.headless", "false");
-        System.setProperty("org.graphstream.ui", "swing");
+    @Test
+    public void create_elem_bigrid() throws InvalidConnectionException, InterruptedException, IncompatibleSignatureException, IncompatibleInterfaceException {
+        BiGridElementFactory factory = BiGridElementFactory.create();
+
+        float stepSize = 0.1f;
+        PureBigraph bigrid0 = factory.crossingFour(0, 0 * stepSize, stepSize);
+        PureBigraph bigrid1 = factory.crossingFour(0, 1 * stepSize, stepSize);
+        PureBigraph bigrid2 = factory.crossingFour(0, 2 * stepSize, stepSize);
+        PureBigraph bigrid3 = factory.crossingFour(0, 3 * stepSize, stepSize);
+
+        PureBigraph bigrid = //bigrid0;
+                ops(bigrid0).parallelProduct(bigrid1)
+                        .parallelProduct(bigrid2)
+                        .parallelProduct(bigrid3)
+                        .getOuterBigraph();
+
+        SwingGraphStreamer graphStreamer = new SwingGraphStreamer(bigrid)
+                .renderSites(true)
+                .renderRoots(true);
+        graphStreamer.prepareSystemEnvironment();
+        Viewer graphViewer = graphStreamer.getGraphViewer();
+        while (true)
+            Thread.sleep(10000);
     }
 
     @Test
@@ -130,6 +155,8 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
         BigraphFileModelManagement.Store.exportAsInstanceModel(result, System.out);
         BigraphFileModelManagement.Store.exportAsInstanceModel(result, new FileOutputStream("test.xmi"));
         BigraphFileModelManagement.Store.exportAsMetaModel(result, new FileOutputStream("test.ecore"));
+        BigraphFileModelManagement.Store.exportAsMetaModel(result.getSignature(), new FileOutputStream("sig.ecore"));
+        BigraphFileModelManagement.Store.exportAsInstanceModel(result.getSignature(), new FileOutputStream("sig.xmi"));
         GUI(result, true, false);
         while (true)
             Thread.sleep(10000);

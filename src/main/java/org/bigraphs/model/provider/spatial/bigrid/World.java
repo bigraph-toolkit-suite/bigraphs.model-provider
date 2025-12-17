@@ -103,13 +103,10 @@ public class World {
         tileToCollapse.collapse();
 
         // Propagation using stack
-//        Stack<Tile> stack = new Stack<>();
         Queue<Tile> stack = new LinkedList<>();
-//        stack.push(tileToCollapse);
         stack.add(tileToCollapse);
 
         while (!stack.isEmpty()) {
-//            Tile tile = stack.pop();
             Tile tile = stack.remove();
             List<Integer> tilePossibilities = tile.getPossibilities();
             List<BiGridConfig.Direction> directions = tile.getDirections();
@@ -119,7 +116,6 @@ public class World {
                 if (neighbour.getEntropy() != 0) {
                     boolean reduced = neighbour.constrain(tilePossibilities, direction);
                     if (reduced) {
-//                        stack.push(neighbour); // Propagate further if reduced
                         stack.add(neighbour); // Propagate further if reduced
                     }
                 }

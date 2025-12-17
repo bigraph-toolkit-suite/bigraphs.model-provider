@@ -15,8 +15,8 @@ import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.swing_viewer.util.DefaultMouseManager;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.util.InteractiveElement;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
@@ -29,17 +29,17 @@ import java.util.stream.Collectors;
 
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 
+/**
+ * This test provides a "bigrid term builder" or "path selector" via a simple GUI.
+ *
+ * @author Dominik Grzelak
+ */
+@Disabled
 public class NavigationPathCreator implements BigraphUnitTestSupport {
     static final String DUMP_PATH = "src/test/resources/dump/navigation/";
 
-    @BeforeMethod
-    public void setUp() {
-        System.setProperty("java.awt.headless", "false");
-        System.setProperty("org.graphstream.ui", "swing");
-    }
-
     @Test
-    public void test_nodeSelector() throws Exception {
+    public void test_node_selector() throws Exception {
         float stepSize = 0.2f;
         Point2D.Float originPoint = new Point2D.Float(0, 0);
         List<Point2D.Float> convexPoints = new LinkedList<>();
@@ -98,7 +98,7 @@ public class NavigationPathCreator implements BigraphUnitTestSupport {
 
                 Node node = graph.getNode(elementId);
                 for (int i = 0; i < node.getDegree(); i++) {
-//                    System.out.println("Node " + i + ": " + node.getEdge(i).getId());
+                    // System.out.println("Node " + i + ": " + node.getEdge(i).getId());
                     Node node1 = node.getEdge(i).getNode1();
                     node1.setAttribute("ui.class", "highlight");
                     Optional<? extends BigraphEntity.NodeEntity<?>> first = bigraph.getAllPlaces().stream()

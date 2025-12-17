@@ -19,7 +19,7 @@ import java.util.Map;
  * <p>
  * This is the data format every model parser and model provider (i.e., each implementation of {@link BBigraphProvider}) is
  * able to understand, produce and/or update this format.
- * It is immutable, thus, can be subsequently enriched by all model providers.
+ * It is mutable, thus, can be subsequently enriched by all model providers.
  *
  * @author Dominik Grzelak
  */
@@ -36,14 +36,13 @@ public class BLocationModelData {
     int numOfNavModelSites = 0;
     int numOfLocModelSites = 0;
 
-    //TODO: THIS IS OUTPUT: make monad, add a clone method
-    Map<String, List<Point2D.Float>> localeNameToCoordinates = new HashMap<>();
-    Map<String, String> bNodeIdToExternalLocaleName = new HashMap<>();
-    BiMap<String, Integer> localeNameToRootOrSiteIndex = HashBiMap.create();
     // F, F', F'' ... sets of coordinates
+    Map<String, List<Point2D.Float>> localeNameToCoordinates = new HashMap<>();
     // map: nodeID -> external locale label
+    Map<String, String> bNodeIdToExternalLocaleName = new HashMap<>();
     // external local name <-> site/root index original
-    //TODO: THIS IS OUTPUT
+    BiMap<String, Integer> localeNameToRootOrSiteIndex = HashBiMap.create();
+
 
     public Locale getLocaleByName(String name) {
         if (name == null) return null;

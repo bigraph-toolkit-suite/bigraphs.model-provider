@@ -3,22 +3,17 @@ package org.bigraphs.model.provider.test;
 import org.bigraphs.framework.core.EcoreBigraph;
 import org.bigraphs.framework.core.analysis.BigraphDecomposer;
 import org.bigraphs.framework.core.analysis.PureBigraphDecomposerImpl;
-import org.bigraphs.framework.core.exceptions.IncompatibleSignatureException;
-import org.bigraphs.framework.core.exceptions.InvalidConnectionException;
-import org.bigraphs.framework.core.exceptions.operations.IncompatibleInterfaceException;
 import org.bigraphs.framework.core.impl.elementary.Placings;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.framework.core.utils.BigraphUtil;
-import org.bigraphs.framework.visualization.SwingGraphStreamer;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridElementFactory;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridConnectivityCheckerDFS;
 import org.bigraphs.model.provider.spatial.bigrid.World;
 import org.bigraphs.model.provider.spatial.bigrid.BiGridConnectivityChecker;
 import org.bigraphs.testing.BigraphUnitTestSupport;
-import org.graphstream.ui.view.Viewer;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,39 +21,14 @@ import java.util.List;
 import static org.bigraphs.framework.core.factory.BigraphFactory.ops;
 import static org.bigraphs.framework.core.factory.BigraphFactory.purePlacings;
 
+/**
+ * This class provides a test for Wave Function Collapse for Bigrids.
+ *
+ * @author Dominik Grzelak
+ */
+@Disabled
 public class BigridCreationWFCTest implements BigraphUnitTestSupport {
     static final String DUMP_PATH = "src/test/resources/dump/bigrid/";
-
-    @BeforeMethod
-    public void setUp() {
-        System.setProperty("java.awt.headless", "false");
-        System.setProperty("org.graphstream.ui", "swing");
-    }
-
-    @Test
-    public void create_elem_bigrid() throws InvalidConnectionException, InterruptedException, IncompatibleSignatureException, IncompatibleInterfaceException {
-        BiGridElementFactory factory = BiGridElementFactory.create();
-
-        float stepSize = 0.1f;
-        PureBigraph bigrid0 = factory.crossingFour(0, 0 * stepSize, stepSize);
-        PureBigraph bigrid1 = factory.crossingFour(0, 1 * stepSize, stepSize);
-        PureBigraph bigrid2 = factory.crossingFour(0, 2 * stepSize, stepSize);
-        PureBigraph bigrid3 = factory.crossingFour(0, 3 * stepSize, stepSize);
-
-        PureBigraph bigrid = //bigrid0;
-                ops(bigrid0).parallelProduct(bigrid1)
-                        .parallelProduct(bigrid2)
-                        .parallelProduct(bigrid3)
-                        .getOuterBigraph();
-
-        SwingGraphStreamer graphStreamer = new SwingGraphStreamer(bigrid)
-                .renderSites(true)
-                .renderRoots(true);
-        graphStreamer.prepareSystemEnvironment();
-        Viewer graphViewer = graphStreamer.getGraphViewer();
-        while (true)
-            Thread.sleep(10000);
-    }
 
     /**
      * Key Actions for GraphStream viewer:
@@ -75,7 +45,7 @@ public class BigridCreationWFCTest implements BigraphUnitTestSupport {
      * @throws Exception
      */
     @Test
-    void create_bigrid_nxm() throws Exception {
+    void test_wcf_for_bigrid() throws Exception {
 
         int n = 5; // rows
         int m = 5; // columns

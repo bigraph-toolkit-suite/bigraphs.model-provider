@@ -29,11 +29,6 @@ import static org.bigraphs.framework.core.factory.BigraphFactory.ops;
 public class QuadtreeToBLocationModelDataTest implements BigraphUnitTestSupport {
     static final String DUMP_PATH = "src/test/resources/dump/bigrid_quadtree/";
 
-    @BeforeMethod
-    public void setUp() {
-        System.setProperty("java.awt.headless", "false");
-    }
-
     @Test
     void gui_random_insertion_and_deletion() throws Exception {
         double areaSizeW = 500;

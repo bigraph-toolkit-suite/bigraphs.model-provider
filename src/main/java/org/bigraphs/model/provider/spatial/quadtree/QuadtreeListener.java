@@ -1,7 +1,5 @@
 package org.bigraphs.model.provider.spatial.quadtree;
 
-import java.awt.geom.Point2D;
-
 /**
  * Custom listener interface for the quadtree visualization implementation.
  *

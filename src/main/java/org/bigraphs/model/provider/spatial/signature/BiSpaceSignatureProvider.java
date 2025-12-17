@@ -7,8 +7,7 @@ import org.bigraphs.model.provider.base.BAbstractSignatureProvider;
 import static org.bigraphs.framework.core.factory.BigraphFactory.pureSignatureBuilder;
 
 /**
- * The default signature for the CF-MAPF Use Case.
- * This represents the location syntax.
+ * The basis signature for bi-spatial models.
  *
  * @author Dominik Grzelak
  */
@@ -21,7 +20,7 @@ public class BiSpaceSignatureProvider extends BAbstractSignatureProvider<Dynamic
     private static BiSpaceSignatureProvider instance;
     private static final Object lock = new Object();
 
-    private BiSpaceSignatureProvider() {
+    BiSpaceSignatureProvider() {
     }
 
     public static BiSpaceSignatureProvider getInstance() {
