@@ -19,6 +19,7 @@ import static org.bigraphs.framework.core.factory.BigraphFactory.pureSignatureBu
  */
 public class DirectionalBiSpaceSignatureProvider extends BiSpaceSignatureProvider {
 
+    // Cardinal directions (4)
     public static final String LEFT_ROUTE_TYPE = "LeftRoute";
     public static final String RIGHT_ROUTE_TYPE = "RightRoute";
     public static final String FORWARD_ROUTE_TYPE = "ForwardRoute";
