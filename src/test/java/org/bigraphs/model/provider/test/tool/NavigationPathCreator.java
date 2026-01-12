@@ -41,6 +41,7 @@ public class NavigationPathCreator implements BigraphUnitTestSupport {
     @Test
     public void test_node_selector() throws Exception {
         float stepSize = 0.2f;
+        float padding = 0f;
         Point2D.Float originPoint = new Point2D.Float(0, 0);
         List<Point2D.Float> convexPoints = new LinkedList<>();
         convexPoints.add(originPoint);
@@ -48,7 +49,7 @@ public class NavigationPathCreator implements BigraphUnitTestSupport {
         convexPoints.add(new Point2D.Float(1f, 1f));
         convexPoints.add(new Point2D.Float(1f, 0f));
 
-        PureBigraph generated = ConvexShapeBuilder.generateAsSingle(convexPoints, stepSize, BiGridElementFactory.create());
+        PureBigraph generated = ConvexShapeBuilder.generateSingleRoot(convexPoints, stepSize, padding, BiGridElementFactory.create());
         BigraphFileModelManagement.Store.exportAsInstanceModel(generated, System.out);
         BigraphFileModelManagement.Store.exportAsInstanceModel(generated, new FileOutputStream("src/test/resources/dump/generated.xmi"));
         SwingGraphStreamer graphStreamer = new SwingGraphStreamer(generated)

@@ -5,6 +5,8 @@ import org.bigraphs.framework.core.exceptions.InvalidConnectionException;
 import org.bigraphs.framework.core.exceptions.operations.IncompatibleInterfaceException;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 
+import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -14,9 +16,10 @@ import static org.bigraphs.framework.core.factory.BigraphFactory.ops;
 
 public class ConvexShapeBuilder {
 
-    public static List<PureBigraph> generateAsList(
+    public static List<PureBigraph> generateMultiRoot(
             List<Point2D.Float> convexPoints,
             float stepSize,
+            float padding,
             BiGridElementFactory factory
     ) throws InvalidConnectionException {
         List<PureBigraph> gridElements = new ArrayList<>();
@@ -30,6 +33,19 @@ public class ConvexShapeBuilder {
         }
         polygon.closePath();
 
+        Area innerArea = new Area(polygon);
+
+        if (padding > 0f) {
+            BasicStroke stroke = new BasicStroke(
+                    2f * padding,
+                    BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_MITER
+            );
+
+            Shape outline = stroke.createStrokedShape(polygon);
+            innerArea.subtract(new Area(outline));
+        }
+
         // Step 2: Compute bounding box
         float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE;
         float maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
@@ -41,10 +57,17 @@ public class ConvexShapeBuilder {
         }
 
         // Step 3: Grid iteration and filtering
-        for (float x = minX; x <= maxX; x += stepSize) {
-            for (float y = minY; y <= maxY; y += stepSize) {
+        // use integer loop variable instead of floating point arithmetic
+        int nx = (int) Math.ceil((maxX - minX) / stepSize);
+        int ny = (int) Math.ceil((maxY - minY) / stepSize);
+        for (int ix = 0; ix <= nx; ix++) {
+            float x = minX + ix * stepSize;
+            for (int iy = 0; iy <= ny; iy++) {
+                float y = minY + iy * stepSize;
                 Point2D.Float point = new Point2D.Float(x, y);
-                if (polygon.contains(point)) {
+
+                if (innerArea.contains(point)) {
+//                if (polygon.contains(point)) {
                     PureBigraph grid = factory.crossingFour(x, y, stepSize);
                     gridElements.add(grid);
                 }
@@ -54,12 +77,14 @@ public class ConvexShapeBuilder {
         return gridElements;
     }
 
-    public static PureBigraph generateAsSingle(
+    public static PureBigraph generateSingleRoot(
             List<Point2D.Float> convexPoints,
             float stepSize,
+            float padding,
             BiGridElementFactory factory
     ) throws InvalidConnectionException {
-        List<PureBigraph> gridElements = generateAsList(convexPoints, stepSize, factory);
+
+        List<PureBigraph> gridElements = generateMultiRoot(convexPoints, stepSize, padding, factory);
         return gridElements.stream()
                 .reduce((b1, b2) -> {
                     try {
@@ -69,35 +94,5 @@ public class ConvexShapeBuilder {
                     }
                 })
                 .orElseThrow(() -> new IllegalStateException("No bigraphs to reduce"));
-    }
-
-    // Helper method to check if a point is inside a convex polygon
-    private static boolean isPointInsideConvexPolygon(Point2D.Float point, List<Point2D.Float> polygon) {
-        int n = polygon.size();
-        boolean isInside = true;
-        float prevCross = 0;
-
-        for (int i = 0; i < n; i++) {
-            Point2D.Float a = polygon.get(i);
-            Point2D.Float b = polygon.get((i + 1) % n);
-
-            float dx1 = b.x - a.x;
-            float dy1 = b.y - a.y;
-            float dx2 = point.x - a.x;
-            float dy2 = point.y - a.y;
-
-            float cross = dx1 * dy2 - dy1 * dx2;
-
-            if (i == 0) {
-                prevCross = cross;
-            } else {
-                if (cross * prevCross < 0) {
-                    isInside = false;
-                    break;
-                }
-            }
-        }
-
-        return isInside;
     }
 }

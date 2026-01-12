@@ -126,7 +126,8 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
     @Test
     public void test_convexShape_PointList() throws InvalidConnectionException, IOException, InterruptedException {
-        float stepSize = 0.5f;
+        float stepSize = 0.2f;
+        float padding = 0.8f;
 //        Point2D.Float originPoint = new Point2D.Float(0, 0);
 //        List<Point2D.Float> convexPoints = new LinkedList<>();
 //        convexPoints.add(originPoint);
@@ -148,16 +149,17 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
         convexPoints.add(new Point2D.Float(0f, 0f));
         convexPoints.add(new Point2D.Float(0f, 1.5f));
-        convexPoints.add(new Point2D.Float(4.5f, 0.25f));
-        convexPoints.add(new Point2D.Float(1.75f, -3f));
+        convexPoints.add(new Point2D.Float(4.5f, 0.15f));
+        convexPoints.add(new Point2D.Float(1.70f, -2.65f));
 
-        PureBigraph result = ConvexShapeBuilder.generateAsSingle(convexPoints, stepSize, BiGridElementFactory.create());
+        PureBigraph result = ConvexShapeBuilder.generateSingleRoot(convexPoints, stepSize, padding, BiGridElementFactory.create());
         BigraphFileModelManagement.Store.exportAsInstanceModel(result, System.out);
-        BigraphFileModelManagement.Store.exportAsInstanceModel(result, new FileOutputStream("test.xmi"));
-        BigraphFileModelManagement.Store.exportAsMetaModel(result, new FileOutputStream("test.ecore"));
-        BigraphFileModelManagement.Store.exportAsMetaModel(result.getSignature(), new FileOutputStream("sig.ecore"));
-        BigraphFileModelManagement.Store.exportAsInstanceModel(result.getSignature(), new FileOutputStream("sig.xmi"));
+        BigraphFileModelManagement.Store.exportAsInstanceModel(result, new FileOutputStream(DUMP_PATH + "test.xmi"));
+        BigraphFileModelManagement.Store.exportAsMetaModel(result, new FileOutputStream(DUMP_PATH + "test.ecore"));
+        BigraphFileModelManagement.Store.exportAsMetaModel(result.getSignature(), new FileOutputStream(DUMP_PATH + "sig.ecore"));
+        BigraphFileModelManagement.Store.exportAsInstanceModel(result.getSignature(), new FileOutputStream(DUMP_PATH + "sig.xmi"));
         GUI(result, true, false);
+        System.out.println("Roots: " + result.getRoots().size());
         while (true)
             Thread.sleep(10000);
     }
@@ -174,7 +176,7 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
         PureBigraph generated = LinearInterpolationBuilder.generate(originalPoints, 0.25f, 0.25f);
         BigraphFileModelManagement.Store.exportAsInstanceModel(generated, System.out);
-        BigraphFileModelManagement.Store.exportAsInstanceModel(generated, new FileOutputStream("src/test/resources/dump/generated.xmi"));
+        BigraphFileModelManagement.Store.exportAsInstanceModel(generated, new FileOutputStream(DUMP_PATH + "generated.xmi"));
         SwingGraphStreamer graphStreamer = new SwingGraphStreamer(generated)
                 .renderSites(false)
                 .renderRoots(false);
