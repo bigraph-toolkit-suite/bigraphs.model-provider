@@ -187,4 +187,33 @@ public class BigridCreationTest implements BigraphUnitTestSupport {
 
     }
 
+    @Test
+    void bigrid_diagonal() throws Exception {
+        int m = 4;
+        int n = 4;
+        BLocationModelData lmpd = BLocationModelDataFactory.createGrid(m, n, 0, 0, 1, 1f);
+        DiagonalDirectionalBiGridProvider provider = new DiagonalDirectionalBiGridProvider(lmpd, m, n);
+        provider.makeGround(false);
+        PureBigraph bigrid = provider.getBigraph();
+
+        GUI(bigrid, false, false);
+        System.out.println("Roots: " + bigrid.getRoots().size());
+        while (true)
+            Thread.sleep(10000);
+    }
+
+    @Test
+    void bigrid_3d() throws Exception {
+        int m = 5;
+        int n = 5;
+        BLocationModelData lmpd = new BLocationModelData();
+        ThreeDimensionalBiGridProvider provider = new ThreeDimensionalBiGridProvider(lmpd, m, n, 3, 0, 0, 0, 1, 1, 0.5f);
+        provider.makeGround(false);
+        PureBigraph bigrid = provider.getBigraph();
+
+        GUI(bigrid, false, false);
+        System.out.println("Roots: " + bigrid.getRoots().size());
+        while (true)
+            Thread.sleep(10000);
+    }
 }

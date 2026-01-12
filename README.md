@@ -40,9 +40,19 @@ all providers are signature providers since every bigraphical model
 <dependency>
     <groupId>org.bigraphs.model.provider</groupId>
     <artifactId>model-provider-core</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
 </dependency>
 ```
+
+## Examples
+
+| **4x4 Diagonal Bi-Grid**                                                             | **5x5 3-dimensional Bi-Grid**                                                       |
+|--------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| <img src="doc/4x4-diagonal-bigrid.png" alt="4x4-diagonal-bigrid" style="zoom: 45%;"> | <img src="doc/5x5x5-bigrid.png" alt="5x5 3-dimensional Bi-Grid" style="zoom: 45%;"> |
+
+
+
+
 
 ## Building from Source
 
