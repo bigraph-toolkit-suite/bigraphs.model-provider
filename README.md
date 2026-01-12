@@ -46,9 +46,9 @@ all providers are signature providers since every bigraphical model
 
 ## Examples
 
-| **4x4 Diagonal Bi-Grid**                                                             | **5x5 3-dimensional Bi-Grid**                                                       |
-|--------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| <img src="doc/4x4-diagonal-bigrid.png" alt="4x4-diagonal-bigrid" style="zoom: 45%;"> | <img src="doc/5x5x5-bigrid.png" alt="5x5 3-dimensional Bi-Grid" style="zoom: 45%;"> |
+| **4x4 Diagonal Bi-Grid**                                                             | **5x5x5 3-dimensional Bi-Grid**                                                       |
+|--------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| <img src="doc/4x4-diagonal-bigrid.png" alt="4x4-diagonal-bigrid" style="zoom: 45%;"> | <img src="doc/5x5x5-bigrid.png" alt="5x5x5 3-dimensional Bi-Grid" style="zoom: 45%;"> |
 
 
 
