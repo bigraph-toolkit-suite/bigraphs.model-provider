@@ -17,11 +17,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Computes graph properties of a bigrid, a bigraphical grid.
- * - get neighbourhood
- * - etc.
+ * This class provides basic operations and analysis capabilities for bi-grids (i.e., bigraphical grids).
  *
  * @author Dominik Grzelak
+ * @author Tianxiong Zhang (3D bigrid operations)
  */
 public abstract class BiGridSupport {
 
@@ -31,9 +30,9 @@ public abstract class BiGridSupport {
      * The check is based on the Euclidean distance between the agent's center and
      * the target point.
      *
-     * @param agent         the agent whose position is evaluated
-     * @param pointToCheck  the spatial point to compare against
-     * @param threshold     the maximum allowed distance for proximity
+     * @param agent        the agent whose position is evaluated
+     * @param pointToCheck the spatial point to compare against
+     * @param threshold    the maximum allowed distance for proximity
      * @return {@code true} if the agent’s center is within {@code threshold} distance of {@code pointToCheck}; {@code false} otherwise
      */
     public static boolean agentIsCloseAtPoint(BLocationModelData.Agent agent, Point2D.Float pointToCheck, float threshold) {
@@ -47,20 +46,14 @@ public abstract class BiGridSupport {
      * The threshold is derived from the diagonal of the agent’s bounding
      * box (√2 x width).
      *
-     * @param agent         the agent whose proximity to the point is evaluated
-     * @param pointToCheck  the spatial point to compare against
+     * @param agent        the agent whose proximity to the point is evaluated
+     * @param pointToCheck the spatial point to compare against
      * @return {@code true} if any part of the agent (including its bounding box) lies within
-     *         the computed threshold distance from {@code pointToCheck}; {@code false} otherwise
+     * the computed threshold distance from {@code pointToCheck}; {@code false} otherwise
      */
     public static boolean agentIsCloseAtPoint(BLocationModelData.Agent agent, Point2D.Float pointToCheck) {
         float agentBoundingBoxDiagonal = (float) (Math.sqrt(2) * agent.getWidth());
         return agentIsCloseAtPoint(agent, pointToCheck, agentBoundingBoxDiagonal);
-    }
-
-    public static String formatParamControl(Point2D.Float coordinate) {
-        String formattedX = formatCoordinate(coordinate.x);
-        String formattedY = formatCoordinate(coordinate.y);
-        return String.format("C_%s__%s", formattedX, formattedY);
     }
 
     // Locale-independent
@@ -76,7 +69,16 @@ public abstract class BiGridSupport {
         return String.format("%s%d_%02d", prefix, integerPart, fractionalPart);
     }
 
+
+    public static String formatParamControl(Point2D.Float coordinate) {
+        String formattedX = formatCoordinate(coordinate.x);
+        String formattedY = formatCoordinate(coordinate.y);
+        return String.format("C_%s__%s", formattedX, formattedY);
+    }
+
     /**
+     * Parses a 2D parameter control string back to coordinates as {@link Point2D}.
+     * <p>
      * Opposite method to formatParamControl().
      *
      * @param formattedString output of formatParamControl()
@@ -97,16 +99,75 @@ public abstract class BiGridSupport {
         }
     }
 
-    // Locale-independent
+    /**
+     * Formats a 3D coordinate using Point2D for x,y and separate z value.
+     *
+     * @param point2D the x,y coordinates
+     * @param z       the z coordinate (height/layer)
+     * @return formatted coordinate string
+     */
+    public static String formatParamControl3D(Point2D.Float point2D, float z) {
+        return formatParamControl3D(point2D.x, point2D.y, z);
+    }
+
+    /**
+     * Formats a 3D coordinate (x, y, z) into a parameter control string.
+     * Format: C_{x}_{y}_{z}
+     * Example: (0.0, 0.0, 0.0) -> "C_0_00__0_00__0_00"
+     *
+     * @param x the x coordinate (Forward/Back direction)
+     * @param y the y coordinate (Left/Right direction)
+     * @param z the z coordinate (Up/Down direction, height/layer)
+     * @return formatted coordinate string
+     */
+    public static String formatParamControl3D(float x, float y, float z) {
+        String formattedX = formatCoordinate(x);
+        String formattedY = formatCoordinate(y);
+        String formattedZ = formatCoordinate(z);
+        return String.format("C_%s__%s__%s", formattedX, formattedY, formattedZ);
+    }
+
+    /**
+     * Parses a 3D parameter control string back to coordinates.
+     * Opposite of formatParamControl3D().
+     *
+     * @param formattedString output of formatParamControl3D()
+     * @return float array [x, y, z]
+     * @throws IllegalArgumentException if format is invalid
+     */
+    public static float[] parseParamControl3D(String formattedString) throws IllegalArgumentException {
+        if (formattedString == null || !formattedString.startsWith("C_") || formattedString.split("__").length != 3) {
+            throw new IllegalArgumentException("Invalid 3D format");
+        }
+
+        try {
+            String[] parts = formattedString.substring(2).split("__");
+            float x = parseCoordinate(parts[0]);
+            float y = parseCoordinate(parts[1]);
+            float z = parseCoordinate(parts[2]);
+            return new float[]{x, y, z};
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid 3D format", e);
+        }
+    }
+
+    /**
+     * Parses a single coordinate string back to float value.
+     * <p>
+     * Locale-independent
+     *
+     * @param part the coordinate string (e.g., "1_50" or "N2_25")
+     * @return the float value
+     */
     private static float parseCoordinate(String part) {
         part = part.replace("N", "-").replace("_", ".");
         return Float.parseFloat(part);
     }
 
     public static PureBigraphBuilder<DynamicSignature>.Hierarchy connectToOuterName(String localeName,
-                                                                                           Map<String, PureBigraphBuilder<DynamicSignature>.Hierarchy> localeMap,
-                                                                                           String outerName,
-                                                                                           Map<String, String> localeOuterNameMap)
+                                                                                    Map<String, PureBigraphBuilder<DynamicSignature>.Hierarchy> localeMap,
+                                                                                    String outerName,
+                                                                                    Map<String, String> localeOuterNameMap)
             throws InvalidConnectionException, TypeNotExistsException {
         if (!localeOuterNameMap.containsKey(localeName)) {
             localeOuterNameMap.putIfAbsent(localeName, outerName);
@@ -162,7 +223,7 @@ public abstract class BiGridSupport {
                         if (((BigraphEntity.NodeEntity<?>) x).getControl().getNamedType().stringValue().equals(coordControlLbl)) {
                             BigraphEntity<?> locale = bigrid.getParent(bigrid.getParent(x));
                             return bigrid.getChildrenOf(locale).stream()
-                                    .filter(n -> BigraphEntityType.isSite(n))
+                                    .filter(BigraphEntityType::isSite)
                                     .map(n -> (BigraphEntity.SiteEntity) n)
                                     .findFirst()
                                     .orElseThrow()
