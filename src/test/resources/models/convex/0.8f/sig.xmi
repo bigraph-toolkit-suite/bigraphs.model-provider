@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<signatureBaseModel:BDynamicSignature xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:signatureBaseModel="http://org.bigraphs.model" xsi:schemaLocation="http://org.bigraphs.model signatureBaseModel.ecore">
+  <bControls xsi:type="signatureBaseModel:Locale" name="Locale" arity="1"/>
+  <bControls xsi:type="signatureBaseModel:Route" name="Route" arity="1"/>
+  <bControls xsi:type="signatureBaseModel:OccupiedBy" name="OccupiedBy"/>
+  <bKindPlaceSorts xsi:type="signatureBaseModel:LocaleSort" bContainedBy="//@bKindPlaceSorts.2 //@bKindPlaceSorts.0 //@bKindPlaceSorts.1" bCanContain="//@bKindPlaceSorts.0 //@bKindPlaceSorts.1 //@bKindPlaceSorts.2"/>
+  <bKindPlaceSorts xsi:type="signatureBaseModel:RouteSort" bContainedBy="//@bKindPlaceSorts.2 //@bKindPlaceSorts.0 //@bKindPlaceSorts.1" bCanContain="//@bKindPlaceSorts.0 //@bKindPlaceSorts.1 //@bKindPlaceSorts.2"/>
+  <bKindPlaceSorts xsi:type="signatureBaseModel:OccupiedBySort" bContainedBy="//@bKindPlaceSorts.2 //@bKindPlaceSorts.0 //@bKindPlaceSorts.1" bCanContain="//@bKindPlaceSorts.0 //@bKindPlaceSorts.1 //@bKindPlaceSorts.2"/>
+</signatureBaseModel:BDynamicSignature>

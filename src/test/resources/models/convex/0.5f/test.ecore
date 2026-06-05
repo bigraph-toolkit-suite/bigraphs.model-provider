@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="bigraphBaseModel" nsURI="http://org.bigraphs.model" nsPrefix="bigraphBaseModel">
+  <eClassifiers xsi:type="ecore:EClass" name="BPlace" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bChild" upperBound="-1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//BPlace" containment="true" eOpposite="bigraphBaseModel.ecore#//BPlace/bPrnt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bPrnt" eType="ecore:EClass bigraphBaseModel.ecore#//BPlace"
+        eOpposite="bigraphBaseModel.ecore#//BPlace/bChild"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BRoot" eSuperTypes="bigraphBaseModel.ecore#//BPlace bigraphBaseModel.ecore#//IndexableType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bBigraph" lowerBound="1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//BBigraph" eOpposite="bigraphBaseModel.ecore#//BBigraph/bRoots"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BNode" eSuperTypes="bigraphBaseModel.ecore#//BPlace bigraphBaseModel.ecore#//NameableType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bPorts" upperBound="-1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//BPort" containment="true" eOpposite="bigraphBaseModel.ecore#//BPort/bNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//EStringToEJavaObjectMap" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BSite" eSuperTypes="bigraphBaseModel.ecore#//BPlace bigraphBaseModel.ecore#//IndexableType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BPoint" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bLink" eType="ecore:EClass bigraphBaseModel.ecore#//BLink"
+        eOpposite="bigraphBaseModel.ecore#//BLink/bPoints"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BLink" abstract="true" eSuperTypes="bigraphBaseModel.ecore#//NameableType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bPoints" upperBound="-1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//BPoint" eOpposite="bigraphBaseModel.ecore#//BPoint/bLink"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BPort" eSuperTypes="bigraphBaseModel.ecore#//BPoint bigraphBaseModel.ecore#//IndexableType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bNode" lowerBound="1" eType="ecore:EClass bigraphBaseModel.ecore#//BNode"
+        eOpposite="bigraphBaseModel.ecore#//BNode/bPorts"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BInnerName" eSuperTypes="bigraphBaseModel.ecore#//BPoint bigraphBaseModel.ecore#//NameableType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bBigraph" lowerBound="1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//BBigraph" eOpposite="bigraphBaseModel.ecore#//BBigraph/bInnerNames"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BEdge" eSuperTypes="bigraphBaseModel.ecore#//BLink">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bBigraph" lowerBound="1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//BBigraph" eOpposite="bigraphBaseModel.ecore#//BBigraph/bEdges"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BOuterName" eSuperTypes="bigraphBaseModel.ecore#//BLink">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bBigraph" lowerBound="1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//BBigraph" eOpposite="bigraphBaseModel.ecore#//BBigraph/bOuterNames"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NameableType" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IndexableType" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="index" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BBigraph">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bRoots" upperBound="-1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//BRoot" containment="true" eOpposite="bigraphBaseModel.ecore#//BRoot/bBigraph"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bEdges" upperBound="-1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//BEdge" containment="true" eOpposite="bigraphBaseModel.ecore#//BEdge/bBigraph"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bInnerNames" upperBound="-1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//BInnerName" containment="true"
+        eOpposite="bigraphBaseModel.ecore#//BInnerName/bBigraph"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bOuterNames" upperBound="-1"
+        eType="ecore:EClass bigraphBaseModel.ecore#//BOuterName" containment="true"
+        eOpposite="bigraphBaseModel.ecore#//BOuterName/bBigraph"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EStringToEJavaObjectMap" instanceClassName="java.util.Map$Entry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Locale" eSuperTypes="bigraphBaseModel.ecore#//BNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Route" eSuperTypes="bigraphBaseModel.ecore#//BNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="OccupiedBy" eSuperTypes="bigraphBaseModel.ecore#//BNode"/>
+</ecore:EPackage>

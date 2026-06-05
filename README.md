@@ -40,7 +40,7 @@ all providers are signature providers since every bigraphical model
 <dependency>
     <groupId>org.bigraphs.model.provider</groupId>
     <artifactId>model-provider-core</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 

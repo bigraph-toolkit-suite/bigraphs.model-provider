@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="signatureBaseModel" nsURI="http://org.bigraphs.model" nsPrefix="signatureBaseModel">
+  <eClassifiers xsi:type="ecore:EClass" name="BDynamicSignature" eSuperTypes="signatureBaseModel.ecore#//BKindSignature"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BControl" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="arity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" ordered="false"
+        lowerBound="1" eType="ecore:EEnum signatureBaseModel.ecore#//BControlStatus"
+        defaultValueLiteral="ACTIVE"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bSig" lowerBound="1" eType="ecore:EClass signatureBaseModel.ecore#//BSorting"
+        eOpposite="signatureBaseModel.ecore#//BSorting/bControls"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="BControlStatus">
+    <eLiterals name="ACTIVE"/>
+    <eLiterals name="ATOMIC" value="1"/>
+    <eLiterals name="PASSIVE" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BKindPlaceSorting" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bPlaceSorting" lowerBound="1"
+        eType="ecore:EClass signatureBaseModel.ecore#//BKindSignature" eOpposite="signatureBaseModel.ecore#//BKindSignature/bKindPlaceSorts"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bContainedBy" upperBound="-1"
+        eType="ecore:EClass signatureBaseModel.ecore#//BKindPlaceSorting" eOpposite="signatureBaseModel.ecore#//BKindPlaceSorting/bCanContain"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bCanContain" upperBound="-1"
+        eType="ecore:EClass signatureBaseModel.ecore#//BKindPlaceSorting" eOpposite="signatureBaseModel.ecore#//BKindPlaceSorting/bContainedBy"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BKindSortNonAtomic" abstract="true"
+      eSuperTypes="signatureBaseModel.ecore#//BKindPlaceSorting"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BKindSignature" eSuperTypes="signatureBaseModel.ecore#//BSorting">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bKindPlaceSorts" lowerBound="1"
+        upperBound="-1" eType="ecore:EClass signatureBaseModel.ecore#//BKindPlaceSorting"
+        containment="true" eOpposite="signatureBaseModel.ecore#//BKindPlaceSorting/bPlaceSorting"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BKindSortAtomic" abstract="true" eSuperTypes="signatureBaseModel.ecore#//BKindPlaceSorting"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BSorting" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bControls" upperBound="-1"
+        eType="ecore:EClass signatureBaseModel.ecore#//BControl" containment="true"
+        eOpposite="signatureBaseModel.ecore#//BControl/bSig"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BBasicSignature" eSuperTypes="signatureBaseModel.ecore#//BKindSignature"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Locale" eSuperTypes="signatureBaseModel.ecore#//BControl"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LocaleSort" eSuperTypes="signatureBaseModel.ecore#//BKindSortNonAtomic"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Route" eSuperTypes="signatureBaseModel.ecore#//BControl"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RouteSort" eSuperTypes="signatureBaseModel.ecore#//BKindSortNonAtomic"/>
+  <eClassifiers xsi:type="ecore:EClass" name="OccupiedBy" eSuperTypes="signatureBaseModel.ecore#//BControl"/>
+  <eClassifiers xsi:type="ecore:EClass" name="OccupiedBySort" eSuperTypes="signatureBaseModel.ecore#//BKindSortNonAtomic"/>
+</ecore:EPackage>

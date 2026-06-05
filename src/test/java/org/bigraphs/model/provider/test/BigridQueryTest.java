@@ -112,8 +112,8 @@ public class BigridQueryTest implements BigraphUnitTestSupport {
         start = System.nanoTime();
 
         AbstractBigraphMatcher<PureBigraph> matcher = AbstractBigraphMatcher.create(PureBigraph.class);
-        MatchIterable<BigraphMatch<PureBigraph>> match = matcher.match(bigrid, rr11);
-        Iterator<BigraphMatch<PureBigraph>> iterator = match.iterator();
+        MatchIterable<? extends BigraphMatch<PureBigraph>> match = matcher.matchFirst(bigrid, rr11);
+        Iterator<? extends BigraphMatch<PureBigraph>> iterator = match.iterator();
         int cntCombinations = 0;
         while (iterator.hasNext()) {
             BigraphMatch<PureBigraph> next = iterator.next();

@@ -1,14 +1,13 @@
 package org.bigraphs.model.provider.spatial.bigrid;
 
-import org.bigraphs.framework.core.BigraphEntityType;
-import org.bigraphs.framework.core.Control;
 import org.bigraphs.framework.core.impl.BigraphEntity;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.signature.DynamicControl;
 
 import java.util.*;
 
-import static org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider.ROUTE_TYPE;
+import static org.bigraphs.model.provider.spatial.bigrid.BiGridConnectivityChecker.getConnectedLocales;
+import static org.bigraphs.model.provider.spatial.bigrid.BiGridConnectivityChecker.getLocales;
 
 /**
  * Utility class to check connectivity properties of bigrid structures.
@@ -93,43 +92,5 @@ public class BiGridConnectivityCheckerDFS {
         }
 
         return adjacencyMap;
-    }
-
-    /**
-     * Get all Locale-typed nodes in the bigrid.
-     */
-    private static List<BigraphEntity.NodeEntity<DynamicControl>> getLocales(PureBigraph bigrid) {
-        List<BigraphEntity.NodeEntity<DynamicControl>> locales = new ArrayList<>();
-        for (BigraphEntity.NodeEntity<DynamicControl> node : bigrid.getNodes()) {
-            if (node.getControl().getNamedType().stringValue().equals("Locale")) {
-                locales.add(node);
-            }
-        }
-        return locales;
-    }
-
-    /**
-     * Get all Locale nodes connected to the given Locale node via Route nodes and outer names.
-     */
-    private static List<BigraphEntity.NodeEntity<DynamicControl>> getConnectedLocales(
-            PureBigraph bigrid, BigraphEntity.NodeEntity<DynamicControl> locale) {
-
-        List<BigraphEntity.NodeEntity<DynamicControl>> connectedLocales = new ArrayList<>();
-
-        // Get all Route nodes nested inside the current Locale node
-        for (BigraphEntity<?> route : bigrid.getChildrenOf(locale)) {
-            if (BigraphEntityType.isNode(route) && route.getControl().getNamedType().stringValue().equals(ROUTE_TYPE)) {
-                // Find the outer name this Route node links to
-                for (BigraphEntity.Link outerName : bigrid.getIncidentLinksOf((BigraphEntity.NodeEntity<? extends Control<?, ?>>) route)) {
-                    // Find all Locale nodes that also link to this outer name
-                    for (BigraphEntity.NodeEntity<DynamicControl> otherLocale : getLocales(bigrid)) {
-                        if (!otherLocale.equals(locale) && bigrid.getIncidentLinksOf(otherLocale).contains(outerName)) {
-                            connectedLocales.add(otherLocale);
-                        }
-                    }
-                }
-            }
-        }
-        return connectedLocales;
     }
 }

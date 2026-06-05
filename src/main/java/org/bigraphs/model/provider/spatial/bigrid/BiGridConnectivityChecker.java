@@ -6,8 +6,10 @@ import org.bigraphs.framework.core.impl.BigraphEntity;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.signature.DynamicControl;
 import org.bigraphs.model.provider.spatial.signature.BiSpaceSignatureProvider;
+import org.bigraphs.model.provider.spatial.signature.ThreeDimensionalBiSpaceSignatureProvider;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Utility class to check connectivity properties of bigrid structures.
@@ -19,6 +21,9 @@ import java.util.*;
  * @see BiGridConnectivityCheckerDFS
  */
 public class BiGridConnectivityChecker {
+
+    private final static Set<String> localeControlNames = Set.of(BiSpaceSignatureProvider.LOCALE_TYPE);
+    private final static Set<String> routeControlNames = ThreeDimensionalBiSpaceSignatureProvider.getInstance().getSignature().getControls().stream().map(x -> x.getNamedType().stringValue()).collect(Collectors.toSet());
 
     /**
      * Checks if the given bigrid is fully connected.
@@ -73,27 +78,36 @@ public class BiGridConnectivityChecker {
     /**
      * Get all Locale-typed nodes in the bigrid.
      */
-    private static List<BigraphEntity.NodeEntity<DynamicControl>> getLocales(PureBigraph bigrid) {
-        List<BigraphEntity.NodeEntity<DynamicControl>> locales = new ArrayList<>();
-        for (BigraphEntity.NodeEntity<DynamicControl> node : bigrid.getNodes()) {
-            if (node.getControl().getNamedType().stringValue().equals(BiSpaceSignatureProvider.LOCALE_TYPE)) {
-                locales.add(node);
-            }
-        }
-        return locales;
+    public static List<BigraphEntity.NodeEntity<DynamicControl>> getLocales(PureBigraph bigrid) {
+        return bigrid.getNodes().stream().filter(BiGridConnectivityChecker::isLocaleEntity).collect(Collectors.toList());
+//        for (BigraphEntity.NodeEntity<DynamicControl> node : bigrid.getNodes()) {
+//            if (node.getControl().getNamedType().stringValue().equals(BiSpaceSignatureProvider.LOCALE_TYPE)) {
+//                locales.add(node);
+//            }
+//        }
+//        return locales;
+    }
+
+    protected static boolean isLocaleEntity(BigraphEntity<?> entity) {
+        return BigraphEntityType.isNode(entity) && localeControlNames.contains(entity.getControl().getNamedType().stringValue());
+    }
+
+    protected static boolean isRouteEntity(BigraphEntity<?> entity) {
+        return BigraphEntityType.isNode(entity) && routeControlNames.contains(entity.getControl().getNamedType().stringValue());
+
     }
 
     /**
      * Get all Locale nodes connected to the given Locale node via Route nodes and outer names.
      */
-    private static List<BigraphEntity.NodeEntity<DynamicControl>> getConnectedLocales(
+    public static List<BigraphEntity.NodeEntity<DynamicControl>> getConnectedLocales(
             PureBigraph bigrid, BigraphEntity.NodeEntity<DynamicControl> locale) {
 
         List<BigraphEntity.NodeEntity<DynamicControl>> connectedLocales = new ArrayList<>();
 
         // Get all Route nodes nested inside the current Locale node
         for (BigraphEntity<?> route : bigrid.getChildrenOf(locale)) {
-            if (BigraphEntityType.isNode(route) && route.getControl().getNamedType().stringValue().equals(BiSpaceSignatureProvider.ROUTE_TYPE)) {
+            if (isRouteEntity(route)) {
                 // Find the outer name this Route node links to
                 for (BigraphEntity.Link outerName : bigrid.getIncidentLinksOf((BigraphEntity.NodeEntity<? extends Control<?, ?>>) route)) {
                     // Find all Locale nodes that also link to this outer name
